@@ -337,6 +337,31 @@ Deployed 2026-09-03. Full history — three real transactions from this
 round alone, the query-param bug, the telemetry bug, and the real
 browser verification — in `conformance/RESULTS.md`.
 
+### Client library: `periplo` on npm
+
+[`packages/helpers`](packages/helpers) ships as the
+[`periplo`](https://www.npmjs.com/package/periplo) npm package: a seller
+helper and a buyer helper, both exercised for real against
+`stellar:testnet`, not illustrative pseudocode.
+
+**Seller side**, `definePaidResource`: one declarative `params` map drives
+both the Bazaar discovery schema and the runtime query-param parser, so
+the two can't drift apart.
+
+**Buyer side**, `payAndFetch`/`discoverPayAndFetch`: wrap discover (search
+the Bazaar) -> pay -> retry into a single call, for use outside an MCP
+runtime.
+
+Run for real against the live deployment three times the same day, each
+run finding and fixing a distinct real gap rather than stopping at the
+first success:
+[`4b45d170...`](https://stellar.expert/explorer/testnet/tx/4b45d17095aaa8c740c3985a040ab5ac0ee455674e8bb3e53bb22707adab41bc),
+[`c2fbad40...`](https://stellar.expert/explorer/testnet/tx/c2fbad40dd692cf9e0d9eda9781328ad4377fadbb914b9c1dcb6a900bed28cb2),
+[`8573061305...`](https://stellar.expert/explorer/testnet/tx/8573061305f58eb6c0cfdab5af3a15a3f67f070eb24d2f411a0c0b1b34b41402)
+(the last one clean: searched, found, resolved, paid, and settled in one
+call). Full writeup in `docs/DEFERRED.md`. See `packages/helpers/README.md`
+for the full quickstart and API reference.
+
 ### A real payment settled through someone else's facilitator
 
 Wire-format compliance is usually shown by comparing what a facilitator

@@ -1,6 +1,6 @@
 # Periplo
 
-[![CI](https://github.com/Eras256/Periplo/actions/workflows/ci.yml/badge.svg)](https://github.com/Eras256/Periplo/actions/workflows/ci.yml)
+[![CI](https://github.com/Periplo402/Periplo/actions/workflows/ci.yml/badge.svg)](https://github.com/Periplo402/Periplo/actions/workflows/ci.yml)
 
 The discovery layer for x402-payable services on Stellar.
 
@@ -541,7 +541,7 @@ thing.
 
   **2026-08-27: this stopped being something we only observed.** Added
   our own data point to `#3226` directly, citing
-  [`fae6daa9`](https://github.com/Eras256/Periplo/commit/fae6daa90885e99d81056c1178d2e13ab81d3980)
+  [`fae6daa9`](https://github.com/Periplo402/Periplo/commit/fae6daa90885e99d81056c1178d2e13ab81d3980)
   (the commit above), a third implementation reaching settle-only
   without coordinating with the other two.
   [whawk46](https://github.com/x402-foundation/x402/issues/3226#issuecomment-5438145198)
@@ -686,7 +686,7 @@ thing.
 
   **Protocol 28 ("Adapter") readiness, checked for real against testnet
   ahead of the 2026-09-16 mainnet vote, not just a version bump.**
-  Commit [`32f5d56`](https://github.com/Eras256/Periplo/commit/32f5d56):
+  Commit [`32f5d56`](https://github.com/Periplo402/Periplo/commit/32f5d56):
   `@stellar/stellar-sdk` upgraded `16.2.0` → `16.3.0`, the LTS release
   backporting full Protocol 28 XDR support (CAP-85's new
   `ContractExecutable` variant, CAP-83) onto the stable v16 API, not
@@ -1334,6 +1334,7 @@ Baseline transcripts backing the conformance claims above:
 [`conformance/baseline/x402-org/discovery-404.md`](conformance/baseline/x402-org/discovery-404.md),
 [`conformance/baseline/x402-org/verify-settle-malformed.md`](conformance/baseline/x402-org/verify-settle-malformed.md).
 Settled transaction evidence: [`conformance/RESULTS.md`](conformance/RESULTS.md).
+Live deployment status page: [periplo402.github.io/status](https://periplo402.github.io/status/).
 
 **2026-09-02: checked against Protocol 28 ("Adapter") ahead of its
 2026-09-16 mainnet vote, real testnet (which has run it since
@@ -1358,7 +1359,7 @@ override in August).
 
 CI (`.github/workflows/ci.yml`, badge above) runs the same gate on every
 push. We confirmed it green with an
-[organic push-triggered run](https://github.com/Eras256/Periplo/actions/runs/31222406798)
+[organic push-triggered run](https://github.com/Periplo402/Periplo/actions/runs/31222406798)
 rather than a manual rerun. It was silently broken from Phase 1 to Phase
 3 for two independently verified causes. Full timeline and raw evidence
 are in [`docs/DEFERRED.md`](docs/DEFERRED.md).

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
-import { FACILITATOR_URL, LICENSE_URL, NPM_URL, REPO_URL } from "@/lib/links";
+import { FACILITATOR_URL, LICENSE_URL, NPM_URL, REPO_URL, STATUS_URL } from "@/lib/links";
 import { BrandLockup } from "./Logo";
 
 export function Footer({
@@ -20,6 +20,7 @@ export function Footer({
         { href: `/${locale}/demo`, label: t.demo, internal: true },
         { href: `${FACILITATOR_URL}/supported`, label: t.facilitator },
         { href: `/${locale}/docs`, label: t.docs, internal: true },
+        { href: STATUS_URL, label: t.statusPage },
       ],
     },
     {

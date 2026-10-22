@@ -1,0 +1,78 @@
+name: Sponsor runway alert
+
+# Scheduled check for apps/facilitator/scripts/sponsor-runway-alert.ts
+# (docs/OPERATIONS.md "Runway monitoring"). Reads the sponsor's PUBLIC
+# key only (a repo *variable*, not a secret: this is a read-only Horizon
+# check, no signing capability involved).
+#
+# GitHub delays scheduled workflows on free/public repos; the real
+# interval between runs can be hours, not the 6h the cron below asks
+# for (see docs/OPERATIONS.md's own dated note on this). The 48h default
+# threshold in the script leaves margin for that.
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+
+concurrency:
+  group: sponsor-runway-alert
+  cancel-in-progress: false
+
+jobs:
+  check-runway:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Check fee-sponsor runway
+        id: runway
+        continue-on-error: true
+        env:
+          STELLAR_FEE_SPONSOR_PUBLIC_TESTNET: ${{ vars.STELLAR_FEE_SPONSOR_PUBLIC_TESTNET }}
+        run: npx tsx apps/facilitator/scripts/sponsor-runway-alert.ts | tee runway-output.txt
+
+      - name: Open an issue if below threshold (skip if one is already open)
+        if: steps.runway.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("node:fs");
+            const output = fs.readFileSync("runway-output.txt", "utf8");
+            const label = "sponsor-runway-alert";
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: label,
+            });
+            if (existing.data.length > 0) {
+              console.log(
+                `An open runway-alert issue already exists (#${existing.data[0].number}), not creating a duplicate.`
+              );
+              return;
+            }
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Fee-sponsor runway below threshold",
+              body:
+                "```\n" + output + "\n```\n\n" +
+                "See `docs/OPERATIONS.md`'s rotation runbook for the no-downtime cutover procedure.",
+              labels: [label],
+            });
+
+      - name: Fail the job if runway was below threshold
+        if: steps.runway.outcome == 'failure'
+        run: exit 1

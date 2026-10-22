@@ -1,0 +1,8 @@
+# See docs/OPERATIONS.md for the guard/triage roster this backs.
+# Draft: the shared helpers line (packages/helpers) is deliberately not
+# added yet, pending a second reviewer there.
+
+* @Eras256
+
+/apps/site/ @M0nsxx
+/apps/upto-demo/ @M0nsxx

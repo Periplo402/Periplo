@@ -88,4 +88,4 @@ export const EVIDENCE: readonly EvidenceItem[] = [
   },
 ];
 
-export const RESULTS_URL = "https://github.com/Eras256/Periplo/blob/main/conformance/RESULTS.md";
+export const RESULTS_URL = "https://github.com/Periplo402/Periplo/blob/main/conformance/RESULTS.md";

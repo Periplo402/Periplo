@@ -13,6 +13,6 @@
   "dependencies": {
     "@periplo/bazaar": "workspace:*",
     "@supabase/supabase-js": "2.112.3",
-    "fastembed": "2.1.0"
+    "fastembed": "2.1.1"
   }
 }

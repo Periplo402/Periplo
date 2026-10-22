@@ -156,9 +156,14 @@ that have not started (spec §12: no invented scope).
 - **Supabase types.** `Database`/`ResourceRow` in `packages/bazaar/src/db/client.ts`
   must stay declared with `type`, not `interface`, or `supabase-js` silently
   resolves every result to `never`.
-- **`Array.from(...)` on fastembed output is load-bearing.** It returns a
-  `Float32Array` at runtime; `JSON.stringify` of that is `{"0":v,...}`, which a
-  Postgres `vector` column rejects.
+- **`Array.from(...)` on fastembed output was load-bearing under `2.1.0`**
+  (it returned a `Float32Array` at runtime; `JSON.stringify` of that is
+  `{"0":v,...}`, which a Postgres `vector` column rejects), **kept as a
+  defensive no-op since the `2.1.1` bump**: verified empirically that
+  `passageEmbed`/`queryEmbed` now return a plain `Array` (see
+  `docs/DEFERRED.md`'s fastembed section), but the published `.d.ts` never
+  actually promised this, so the wrapper stays in case a future version
+  regresses.
 - **Catalog keys.** Key on the client's original, un-decoded `routeTemplate`;
   decoding is for validation only. `checkCatalogUrl` runs inside
   `upsertCatalogResource` and rejects `null/*`, non-http(s)/mcp schemes and

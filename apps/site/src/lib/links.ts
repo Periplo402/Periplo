@@ -12,6 +12,7 @@ export const NPM_URL = "https://www.npmjs.com/package/periplo";
 /** Open, not merged (checked against the GitHub API on every publish that cites it). */
 export const UPTO_SPEC_PR_URL = "https://github.com/x402-foundation/x402/pull/3098";
 export const SITE_URL = "https://periplo.xyz";
+export const STATUS_URL = "https://periplo402.github.io/status/";
 /** GitHub private vulnerability reporting (enabled on Periplo402/Periplo, checked 2026-09-27 under the prior Eras256/Periplo location). */
 export const SECURITY_ADVISORY_URL = `${REPO_URL}/security/advisories/new`;
 

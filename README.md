@@ -1359,6 +1359,7 @@ Baseline transcripts backing the conformance claims above:
 [`conformance/baseline/x402-org/discovery-404.md`](conformance/baseline/x402-org/discovery-404.md),
 [`conformance/baseline/x402-org/verify-settle-malformed.md`](conformance/baseline/x402-org/verify-settle-malformed.md).
 Settled transaction evidence: [`conformance/RESULTS.md`](conformance/RESULTS.md).
+Live deployment status page: [periplo402.github.io/status](https://periplo402.github.io/status/).
 
 **2026-09-02: checked against Protocol 28 ("Adapter") ahead of its
 2026-09-16 mainnet vote, real testnet (which has run it since

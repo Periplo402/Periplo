@@ -737,16 +737,19 @@ no API key, no per-call cost, no new CI secret. Landed on `fastembed`'s
   thrown) for a phase whose entire gate is *measured* quality, a worse
   trade than the alternative below.
 - `fastembed` (MIT throughout, verified with `license-checker` before
-  adopting it) carries an unpatched, no-non-major-bump-available critical
-  `tar@^6.2.0` advisory (path traversal / arbitrary write on archive
+  adopting it) carried, at `2.1.0`, an unpatched, no-non-major-bump-available
+  critical `tar@^6.2.0` advisory (path traversal / arbitrary write on archive
   extraction, `npm audit`, `fixAvailable: {isSemVerMajor: true}` to
-  `tar@>7.5.20`, which `fastembed@2.1.0`'s own dependency range can't
-  reach). Accepted: the archive `tar` extracts is the model file this
-  code itself requests from a name it pins
+  `tar@>7.5.20`, which `fastembed@2.1.0`'s own dependency range couldn't
+  reach). Accepted at the time: the archive `tar` extracted was the model
+  file this code itself requested from a name it pins
   (`EmbeddingModel.BGESmallENV15`), not attacker-supplied input, the same
   trust boundary every ONNX-model-downloading library in this space has,
-  `@huggingface/transformers` included. Documented in
-  `packages/search/src/embed.ts`'s own module doc, not hidden.
+  `@huggingface/transformers` included. **Resolved as of the `2.1.1` bump
+  below: `fastembed` dropped `tar` entirely** (confirmed via its own
+  published `package.json`), replacing the one-archive download with
+  per-file downloads from Hugging Face via `@huggingface/hub`. Nothing
+  left to accept here; this paragraph stays as history.
 
 ### `fastembed` upstream is archived, and its type declarations do not match its runtime
 
@@ -776,17 +779,41 @@ production graph. Two separate facts about `fastembed@2.1.0` (the current
    (already documented in `embed.ts`'s own comment and in `CLAUDE.md`'s
    list of traps).
 
-**Status: mitigation in place, no upstream action possible.** An issue
-was drafted with the exact lines and a proposed `Array.from` fix; filing
-was blocked by the archive. Longer-term this is a candidate to vendor
+**Status as of 2026-09-10: mitigation in place, no upstream action possible.**
+An issue was drafted with the exact lines and a proposed `Array.from` fix;
+filing was blocked by the archive. Longer-term this is a candidate to vendor
 (MIT, ~500 lines of real logic in `src/fastembed.ts`) or replace, but
 replacement is not trivial: the licence constraint documented above
 (the `@huggingface/transformers` -> `sharp` -> LGPL `libvips` path that
 `pnpm licence-check` hard-denies) is exactly why `fastembed` was chosen
 over the more obvious alternative, and any replacement has to clear the
-same Apache-2.0-only bar. Not urgent: the model name is pinned, the
-archive still serves, and the type trap is contained to one wrapped
-module.
+same Apache-2.0-only bar.
+
+**2026-10-22, both facts above updated, confirmed live, not assumed.**
+`gh api repos/Anush008/fastembed-js` still reports `archived: true`
+today, but `npm view fastembed time --json` shows two releases landed
+after the archive date anyway: `3.0.0` (2026-09-24) and `2.1.1`
+(2026-09-30). So "no fixes will land" was wrong, or at least incomplete:
+the GitHub repo being archived evidently doesn't block the maintainer's
+own npm publishes. This surfaced because `2.1.0`'s model download broke
+for real: its Google Cloud Storage bucket
+(`storage.googleapis.com/qdrant-fastembed`) started returning `403
+AccessDenied` to anonymous reads (confirmed with a plain `curl`, not
+inferred from CI logs alone), so every CI run needing a fresh download
+(any cache miss) failed `TAR_BAD_ARCHIVE` trying to untar the 403's XML
+error body. Bumped to `2.1.1`, which downloads individual files from
+Hugging Face via `@huggingface/hub` instead (no single archive, `tar`
+dropped as a dependency entirely, so the advisory above is moot now, not
+just mitigated). Also re-tested fact 2 empirically against `2.1.1`:
+`passageEmbed`/`queryEmbed` now return a plain `Array`, not
+`Float32Array`. `embed.ts` keeps the `Array.from(...)` wrapper anyway, as
+a defensive no-op rather than removing it, since the published `.d.ts`
+already proved wrong once. `CLAUDE.md`'s trap entry updated to match.
+Not vendoring or replacing `fastembed`: the live fix removes the only
+concrete problem (the broken download), the archived-repo risk is now
+better understood (publishes still happen) rather than resolved, worth
+revisiting only if a future release breaks again with nowhere to file
+it.
 
 ### `resources.embedding` dimension corrected: 512 (Phase 2 placeholder) → 384
 

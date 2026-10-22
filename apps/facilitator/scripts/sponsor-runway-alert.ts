@@ -15,8 +15,8 @@
  * read-only balance/history check, no signing capability needed.
  *
  * Usage (from repo root, after `nvm use 22`):
- *   node --env-file=apps/facilitator/.env apps/facilitator/scripts/sponsor-runway-alert.ts
- *   node ... sponsor-runway-alert.ts --network stellar:pubnet --threshold-hours 72
+ *   npx tsx --env-file=apps/facilitator/.env apps/facilitator/scripts/sponsor-runway-alert.ts
+ *   npx tsx ... sponsor-runway-alert.ts --network stellar:pubnet --threshold-hours 72
  */
 
 import { fetchSponsorRunway } from "../src/sponsor-runway-fetch.js";

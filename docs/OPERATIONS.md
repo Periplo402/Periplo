@@ -101,8 +101,8 @@ the secret, this is a read-only check), prints the numbers, and exits
 non-zero when projected runway drops below a threshold (default 48h).
 
 ```
-node --env-file=apps/facilitator/.env apps/facilitator/scripts/sponsor-runway-alert.ts
-node ... sponsor-runway-alert.ts --network stellar:pubnet --threshold-hours 72
+npx tsx --env-file=apps/facilitator/.env apps/facilitator/scripts/sponsor-runway-alert.ts
+npx tsx ... sponsor-runway-alert.ts --network stellar:pubnet --threshold-hours 72
 ```
 
 Run for real against the live testnet fee-sponsor before this was
@@ -118,8 +118,35 @@ prove it.
 **Deliberately does not send a notification itself.** No email/Slack/
 webhook channel is configured anywhere in this repo, and inventing one
 here would be scope this tool doesn't own (spec §12: no invented scope).
-Wire the script's own exit code into whatever already runs scheduled
-checks for the deployment; none does yet, which is the honest, stated
-gap this section leaves open rather than implying more automation exists
-than does. A Fly scheduled machine or a GitHub Actions cron are the two
-natural candidates, neither built.
+The script's own exit code is wired into
+[`.github/workflows/sponsor-runway-alert.yml`](../.github/workflows/sponsor-runway-alert.yml),
+a scheduled GitHub Actions job that opens a GitHub issue (deduplicated by
+label, not re-opened on every run) when runway drops below threshold. A
+Fly scheduled machine would also work and isn't built, this is the one
+that is.
+
+## Guard roster and triage
+
+- **Primary: Giovanny** (@Eras256). First responder for everything below.
+- **Secondary: Monse** (@M0nsxx), user-facing surface only (`apps/site`,
+  `apps/upto-demo`): escalate anything in `apps/facilitator` or
+  `contracts/` to Giovanny.
+- **Fer**: not yet on the guard rotation, pending onboarding.
+
+**Triage, by symptom:**
+
+| Symptom | First check | Likely cause |
+| --- | --- | --- |
+| Facilitator down | `GET /status` on the live deployment; Fly logs | A failed deploy, the Fly-account-auth gap documented in `docs/TOOLING.md`, or the fee-sponsor out of runway |
+| Bazaar down | `GET /discovery/search`; the Supabase project's own status | A Supabase outage, a bad migration, or the catalog write-path's own URL gate (`checkCatalogUrl`) rejecting a legitimately new host |
+| Runway critical | This section's own runway-monitoring output, or the `sponsor-runway-alert` GitHub issue if the scheduled workflow already opened one | The fee-sponsor balance is genuinely low, or a burn-rate spike from real traffic; follow the rotation procedure above if a new key is warranted |
+
+**Status page**: [github.com/Periplo402/status](https://github.com/Periplo402/status).
+Honest note, dated 2026-10-22: it runs on GitHub Actions' own scheduled
+workflows, the same mechanism as this repo's own
+`sponsor-runway-alert.yml` above. GitHub delays scheduled workflows on
+free/public repos; in practice, hours can pass between one run and the
+next, not minutes. Treat the status page as "checked periodically," not
+a minute-level alert. If sub-minute detection is ever needed, an
+external monitor (several offer a free tier) is the right tool for that,
+not a GitHub Actions cron; nothing like that is contracted today.

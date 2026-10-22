@@ -3002,6 +3002,20 @@ release published: `stellar-accounts` on crates.io is still `0.7.2`.
 2026-09-18, so earlier statements in this repo that no stable 28.x
 existed were true only until then.
 
+**Update, 2026-10-22 (checked against crates.io that day): the wait
+condition above is met.** `stellar-accounts` `0.8.0` published on
+crates.io 2026-10-20 (`curl -s https://index.crates.io/st/el/stellar-accounts`
+lists it, confirmed via the crates.io API's own `created_at` timestamp:
+`2026-10-20T17:02:26Z`). Its release notes confirm both changes this
+section has been waiting on: the `Signer::Delegated` redefinition to the
+`AuthDigestPreimage` struct (`#868`) and a security fix rejecting a
+cyclic/self-referential `Delegated` signer
+(`GHSA-jpg9-m7w4-c7wc`, patched first in `0.7.3`, same day). This is the
+trigger this section's 2026-09-10 decision named: "wait for the official
+`0.8.0` release before re-attempting the two-context case." **Noted as a
+trigger only, not acted on**: the two-context `UnvalidatedContext #3002`
+re-attempt itself has not been started.
+
 ## Helper library and mainnet-ops roadmap, opened 2026-09-10
 
 Three items worth resolving on their own merits, scoped and budgeted

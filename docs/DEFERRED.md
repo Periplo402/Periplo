@@ -1329,7 +1329,9 @@ against the actual amount charged, not the signed ceiling.
 `stellar-accounts` crate on crates.io (0.7.2, the latest stable as of
 this writing) pins `soroban-sdk ^26.1`, not the `27.x` line this
 project's already-deployed, already-proven Phase 6 contract targets
-(matching the live testnet protocol version). Confirmed by a real build
+(matching the live testnet protocol version). **Update, 2026-10-22: this
+supersedes "the latest stable" above, see the dated note further down
+this section.** Confirmed by a real build
 attempt, not assumed from the version numbers: adding `stellar-accounts`
 directly to `upto-settlement`'s own `Cargo.toml` pulled in a second,
 incompatible `soroban-sdk` into the same dependency graph, producing

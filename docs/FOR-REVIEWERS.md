@@ -11,7 +11,11 @@ minutes for this one. Read in this order.
 live right now, `stellar:testnet`. `GET /supported` returns the real
 `exact` scheme capabilities; `GET /discovery/resources` returns the real
 Bazaar catalog. Nothing below this line needs to be taken on faith,
-you can check it yourself before reading another word.
+you can check it yourself before reading another word. The repository
+itself lives at
+[github.com/Periplo402/Periplo](https://github.com/Periplo402/Periplo),
+and the live deployment status is tracked at
+[periplo402.github.io/status](https://periplo402.github.io/status/).
 
 ## 2. The one thing no other submission in this round can currently show (2 minutes)
 
@@ -49,6 +53,12 @@ states the caveat plainly rather than let the gap ship silently.
 `verified: true` any commit in this repo does; check it, don't take it
 on trust. Full writeup in
 [`docs/UPTO-CONVERGENCE.md`](UPTO-CONVERGENCE.md#the-structure-actually-drafted-five-days-later-and-a-new-finding).
+
+**Update, 2026-10-22:** `stellar-accounts` 0.8.0 published on crates.io
+2026-10-20, the release this project's own 2026-09-10 decision named as
+the trigger to re-attempt the two-context case (see `docs/DEFERRED.md`'s
+Phase 6b section for the dated note). Noted as a trigger only here too:
+the re-attempt itself has not started.
 
 ## 4. A second, different gap: settlement, not authentication (1 minute)
 
@@ -171,6 +181,14 @@ itemized list of every deferred piece and every environment-specific
 gotcha encountered along the way, that's
 [`docs/DEFERRED.md`](DEFERRED.md), the project's own running log of
 blockers and divergences, not a curated highlight reel.
+
+**Recent, 2026-10-22:** eight small PRs landed the same day, repo
+hygiene rather than new capability: the Bazaar buyer/seller helpers now
+have their own `README.md` section, `CODEOWNERS` and a scheduled
+sponsor-runway alert exist, the site's Pollar wallet-connect integration
+is gone (replaced by the status-page link in section 1 above), and a
+broken `fastembed` model download (2.1.0 to 2.1.1) is fixed. None of
+them changes what sections 1-7 above describe.
 
 ## 9. Security, if that's your focus (2 minutes)
 

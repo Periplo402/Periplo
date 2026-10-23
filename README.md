@@ -23,7 +23,7 @@ directly: their resource is the top result, alongside ours, found by a
 buyer who has never seen either service before. This is what the
 catalog is for, demonstrated by someone who isn't us.
 
-**Reviewing this for the RFP round?**
+**Here for the SCF #45 submission?**
 [`docs/FOR-REVIEWERS.md`](docs/FOR-REVIEWERS.md) is a ten-minute,
 human-written path through this repo, not written for a Claude Code
 session the way `CLAUDE.md` is.
@@ -45,7 +45,7 @@ the facilitator's JSON API.
 
 ## The ecosystem is converging on this spec, not the other way around
 
-Twenty-plus real teams are competing for the same SCF #45 award. Here is
+Twenty-plus real teams competed for the same SCF #45 award. Here is
 the one thing none of the others can currently show with real, linked
 evidence: two adjacent implementations in the same round chose to build on the
 `upto` payment spec this project opened upstream
@@ -1324,8 +1324,9 @@ settled transaction recorded in
 [`conformance/RESULTS.md`](conformance/RESULTS.md) closing all three
 on-chain assumptions the spec PR marks open.
 
-This is a response to the Stellar Community Fund RFP, "X402 Facilitator
-with Bazaar (discovery) support" (SCF #45, Q3 2026). See
+This repository was built as a response to the Stellar Community Fund's
+RFP, "X402 Facilitator with Bazaar (discovery) support" (SCF #45, Q3
+2026). See
 [`docs/SPEC.md`](docs/SPEC.md) for full scope: the build specification
 this repository is built against.
 

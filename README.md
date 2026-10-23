@@ -517,6 +517,13 @@ thing.
   constructor's own JSDoc where `getExtra()` already states it two methods
   away.
 
+  **Update, 2026-10-22 (checked against the GitHub API that day): both
+  merged.** [#3338](https://github.com/x402-foundation/x402/pull/3338)
+  merged by @CarsonRoscoe, closing `#3334`.
+  [#3339](https://github.com/x402-foundation/x402/pull/3339) merged by
+  @CarsonRoscoe. This supersedes "fix written and open, not just filed"
+  above.
+
   **One finding didn't survive its own fix, and that's the correct
   outcome, not a failure.**
   [stellar/js-stellar-sdk#1699](https://github.com/stellar/js-stellar-sdk/issues/1699)

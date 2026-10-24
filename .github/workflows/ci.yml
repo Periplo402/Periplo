@@ -49,7 +49,7 @@ jobs:
         # Keyed on the exact fastembed version pinned in
         # packages/search/package.json plus the model name, since a
         # fastembed bump could change the download URL or file layout.
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: /tmp/periplo-fastembed-cache
           key: fastembed-model-v1-fastembed2.1.0-BGESmallENV15

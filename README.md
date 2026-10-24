@@ -23,6 +23,12 @@ directly: their resource is the top result, alongside ours, found by a
 buyer who has never seen either service before. This is what the
 catalog is for, demonstrated by someone who isn't us.
 
+**Disclosure:** `agentpayments.fi` was an independent third party when
+this happened (2026-08-26); its founder, Fer, also joined Nirium's
+team part-time in October 2026, a separate Stellar project with no
+code or deployment relationship to Periplo. Noted for the same reason
+`nirium.xyz/stats` discloses it from the other direction.
+
 **Here for the SCF #45 submission?**
 [`docs/FOR-REVIEWERS.md`](docs/FOR-REVIEWERS.md) is a ten-minute,
 human-written path through this repo, not written for a Claude Code

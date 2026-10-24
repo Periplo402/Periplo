@@ -142,6 +142,11 @@ is the row `conformance/RESULTS.md` itself marks as the strongest
 evidence in that document, ahead of every transaction this project
 settled with its own test accounts.
 
+**Disclosure:** `agentpayments.fi` was an independent third party when
+this happened (2026-08-26); its founder, Fer, also joined Nirium's
+team part-time in October 2026, a separate Stellar project with no
+code or deployment relationship to Periplo.
+
 That same integration found a real bug in the official client itself:
 `HTTPFacilitatorClient` discarded the `EXTENSION-RESPONSES` header
 instead of returning it, filed as

@@ -53,7 +53,7 @@ jobs:
           sha256sum "$WASM"
 
       - name: Upload the wasm as a build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: upto-settlement-containerized-wasm
           path: ${{ env.WASM_PATH }}

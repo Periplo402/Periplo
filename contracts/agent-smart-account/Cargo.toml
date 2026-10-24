@@ -18,7 +18,7 @@ doctest = false
 # of its own, so it can target the SDK version the account framework
 # actually requires without affecting anything else in the repo.
 soroban-sdk = "26.1.1"
-stellar-accounts = "0.7.2"
+stellar-accounts = "0.8.0"
 
 [dev-dependencies]
 soroban-sdk = { version = "26.1.1", features = ["testutils"] }

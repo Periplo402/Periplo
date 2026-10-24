@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   attest-upto-settlement:
-    uses: stellar-expert/soroban-build-workflow/.github/workflows/release.yml@88068ec50cba931a96436869727ed08edeb76ade
+    uses: stellar-expert/soroban-build-workflow/.github/workflows/release.yml@6b16426dd3a61715ddddf83a2df322a6371fe071
     with:
       release_name: ${{ github.event.release.tag_name || inputs.release_name }}
       release_description: "UptoSettlement contract build, SEP-55 attestation (github.com/Eras256/Periplo)"

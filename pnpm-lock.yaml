@@ -49,8 +49,8 @@ importers:
         specifier: 2.112.3
         version: 2.112.3
       '@x402/core':
-        specifier: 2.22.0
-        version: 2.22.0
+        specifier: 2.28.0
+        version: 2.28.0
       '@x402/extensions':
         specifier: 2.22.0
         version: 2.22.0(typescript@7.0.2)
@@ -156,8 +156,8 @@ importers:
         specifier: 16.3.0
         version: 16.3.0(debug@4.4.3)
       '@x402/core':
-        specifier: 2.22.0
-        version: 2.22.0
+        specifier: 2.28.0
+        version: 2.28.0
       '@x402/extensions':
         specifier: 2.22.0
         version: 2.22.0(typescript@7.0.2)
@@ -893,6 +893,9 @@ packages:
 
   '@x402/core@2.22.0':
     resolution: {integrity: sha512-hYySs/PvukqRipC2mKqrsn/jx2U/p5EGnN3clQ2CIcApwtoFuG77CqpC3Wy7Fdp/juW8t8quiPVnqGuIkfix1Q==}
+
+  '@x402/core@2.28.0':
+    resolution: {integrity: sha512-Da/7zKxCKqpBoB4Msc9tFgkAv7tJTD8nG+DSSm+QdXAyJS4PQsmgVSKe17rDJTtlu0pwNbLcOje6MyQ6kaDkig==}
 
   '@x402/extensions@2.22.0':
     resolution: {integrity: sha512-E5Ma1Fs1GwO/ET7KtGUI7dPuVFoINR+mwTWVoGdNi3DsJBJKDWSA7Ta7bDgSANzV3XCAMK9gvz/VSItZliApMA==}
@@ -2130,6 +2133,10 @@ snapshots:
       tinyrainbow: 3.1.1
 
   '@x402/core@2.22.0':
+    dependencies:
+      zod: 3.25.76
+
+  '@x402/core@2.28.0':
     dependencies:
       zod: 3.25.76
 

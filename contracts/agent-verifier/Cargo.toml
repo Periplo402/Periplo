@@ -13,11 +13,11 @@ doctest = false
 # Same pin as agent-smart-account, for the same reason (see that crate's
 # Cargo.toml comment): stellar-accounts 0.7.2 pins soroban-sdk ^26.1, not the
 # 27.0.5 line the rest of this repo's Soroban work targets.
-soroban-sdk = "26.1.1"
+soroban-sdk = "28.0.0"
 stellar-accounts = "0.7.2"
 
 [dev-dependencies]
-soroban-sdk = { version = "26.1.1", features = ["testutils"] }
+soroban-sdk = { version = "28.0.0", features = ["testutils"] }
 ed25519-dalek = { version = "2.1.1", default-features = false, features = ["rand_core"] }
 rand_core = { version = "0.6", default-features = false, features = ["getrandom"] }
 

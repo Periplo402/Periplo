@@ -14,7 +14,7 @@ doctest = false
 # Cargo.toml comment): stellar-accounts 0.7.2 pins soroban-sdk ^26.1, not the
 # 27.0.5 line the rest of this repo's Soroban work targets.
 soroban-sdk = "26.1.1"
-stellar-accounts = "0.7.2"
+stellar-accounts = "0.8.0"
 
 [dev-dependencies]
 soroban-sdk = { version = "26.1.1", features = ["testutils"] }

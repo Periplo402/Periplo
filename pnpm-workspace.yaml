@@ -25,3 +25,28 @@ minimumReleaseAgeExclude:
 # so sharp is excluded outright rather than installed and waived.
 ignoredOptionalDependencies:
   - sharp
+# Vulnerable transitive versions this round's deps otherwise resolve to
+# (pnpm audit --prod, 2026-10-24); @stellar/stellar-sdk 16.3.0 pins axios
+# at exactly 1.18.0 and ajv resolves fast-uri within its own ^3.0.1 range
+# to 3.1.5, both predating their advisories' patched versions.
+overrides:
+  axios: ">=1.20.0"
+  follow-redirects: ">=1.16.1"
+  fast-uri: "3.1.9"
+  smol-toml: ">=1.8.1"
+  source-map-js: ">=1.2.2"
+# GHSA-mrhx-c7xc-m3w5 (zod, "exhaust memory while validating oversized
+# constrained collections") is ignored deliberately, not silently: its
+# advisory range is an unbounded "<4.6.6" with no floor, but the described
+# mechanism is in zod v4's own internals; every path `pnpm audit` reports
+# (23, through @x402/core, viem, abitype, @signinwithethereum/siwe)
+# resolves zod ^3.24.2, built and tested against v3's API. Forcing a v4
+# override across packages that have never run against v4 risks breaking
+# real payment/signing logic, a worse outcome than the advisory as scoped
+# to this repo. Revisit if @x402/core (or viem) ever bumps its own zod
+# range. Added by `pnpm audit --ignore GHSA-mrhx-c7xc-m3w5`, which writes
+# here automatically; kept as the one entry under version control rather
+# than a CLI flag only CI would carry.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-mrhx-c7xc-m3w5

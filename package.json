@@ -19,7 +19,7 @@
     "licence-check": "tsx packages/licence-check/src/cli.ts",
     "eval": "tsx eval/run.ts",
     "verify-evidence": "tsx packages/evidence-check/src/cli.ts",
-    "ci": "pnpm typecheck && pnpm lint && pnpm test && pnpm licence-check"
+    "ci": "pnpm typecheck && pnpm lint && pnpm test && pnpm licence-check && pnpm audit --prod"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.9",

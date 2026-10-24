@@ -1,0 +1,39 @@
+version: 2
+updates:
+  # The pnpm workspace: dependabot reads pnpm-lock.yaml at the workspace
+  # root and opens PRs scoped per workspace package, covering
+  # apps/facilitator, apps/site, packages/*, and eval/ in one entry.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  # Each contracts/* project is a standalone Cargo project outside the
+  # pnpm workspace on purpose (see CLAUDE.md's Architecture section for
+  # upto-settlement; agent-verifier, agent-smart-account and
+  # probe-contract follow the same layout), so each needs its own entry.
+  - package-ecosystem: "cargo"
+    directory: "/contracts/upto-settlement"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "cargo"
+    directory: "/contracts/agent-verifier"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "cargo"
+    directory: "/contracts/agent-smart-account"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "cargo"
+    directory: "/contracts/probe-contract"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

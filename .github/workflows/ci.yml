@@ -120,6 +120,20 @@ jobs:
       - name: Licence gate (no AGPL / copyleft transitive, spec §1)
         run: pnpm licence-check
 
+      - name: Dependency audit gate (production graph, spec §6/§7)
+        # pnpm's own built-in auditor, not the `osv-scan` reusable workflow
+        # removed 2026-08-07 (docs/DEFERRED.md: its call signature broke
+        # GitHub's workflow-file parsing and silently zeroed out every CI
+        # run from Phase 1 through Phase 3). `--prod` scopes this the same
+        # way `pnpm licence-check` is scoped: dependencies +
+        # optionalDependencies, not devDependencies, since a build-tool-only
+        # advisory never reaches the deployed service. Re-adding `osv-scan`
+        # itself (broader than npm advisories) is still a separate, open
+        # item; this gate does not close it. One advisory is deliberately
+        # ignored via `pnpm-workspace.yaml`'s `auditConfig` (see the comment
+        # there for why); this step surfaces everything else as a hard gate.
+        run: pnpm audit --prod
+
       - name: Search relevance gate (nDCG@10 / MRR, spec §5 Phase 5)
         # Seeds its own fixtures into the ephemeral stack, queries them, and
         # fails if nDCG@10 regresses more than 5% against eval/baseline.json.

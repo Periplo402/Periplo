@@ -23,8 +23,8 @@
     "@x402/hono": "2.22.0",
     "@x402/stellar": "2.22.0",
     "esbuild": "0.28.2",
-    "hono": "4.13.3",
-    "zod": "4.4.3"
+    "hono": "4.13.13",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",

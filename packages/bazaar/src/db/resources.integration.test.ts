@@ -51,16 +51,20 @@ function expectWriteBlocked(
 }
 
 describe.skipIf(!env)("resources table: RLS policy (spec §5 Phase 2 gate)", () => {
-  // Non-null assertion is safe here: describe.skipIf(!env) means this
-  // block never runs when env is null.
-  const { url, anonKey, serviceRoleKey } = env as NonNullable<typeof env>;
-
-  const anon: SupabaseClient<Database> = createAnonClient(url, anonKey);
-  const service: SupabaseClient<Database> = createServiceRoleClient(url, serviceRoleKey);
+  // `describe.skipIf` only skips the `it`/hook bodies below, not this
+  // factory itself (vitest still runs it during collection), so `env`
+  // cannot be destructured here directly: with no credentials `env` is
+  // `null` and this would throw even for a suite that is meant to skip
+  // cleanly. Deferred into `beforeAll`, which `skipIf` does not invoke.
+  let anon: SupabaseClient<Database>;
+  let service: SupabaseClient<Database>;
 
   const createdUrls: string[] = [];
 
   beforeAll(async () => {
+    const { url, anonKey, serviceRoleKey } = env as NonNullable<typeof env>;
+    anon = createAnonClient(url, anonKey);
+    service = createServiceRoleClient(url, serviceRoleKey);
     await service.from("resources").delete().like("url", `${TEST_URL_PREFIX}%`);
   });
 

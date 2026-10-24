@@ -66,12 +66,18 @@ function mcpExtension(toolName: string): Record<string, unknown> {
 }
 
 describe.skipIf(!env)("automatic cataloging: real Supabase (spec §5 Phase 4 gate)", () => {
-  const { url, serviceRoleKey } = env as NonNullable<typeof env>;
-  const service: SupabaseClient<Database> = createServiceRoleClient(url, serviceRoleKey);
+  // `describe.skipIf` only skips the registered `it`/hook bodies below, not
+  // this factory itself (vitest still runs it during collection), so `env`
+  // cannot be destructured here directly: with no credentials `env` is
+  // `null` and this would throw even for a suite that is meant to skip
+  // cleanly. Deferred into `beforeAll`, which `skipIf` does not invoke.
+  let service: SupabaseClient<Database>;
 
   const createdUrls: string[] = [];
 
   beforeAll(async () => {
+    const { url, serviceRoleKey } = env as NonNullable<typeof env>;
+    service = createServiceRoleClient(url, serviceRoleKey);
     await service.from("resources").delete().like("url", `${TEST_URL_PREFIX}%`);
   });
 

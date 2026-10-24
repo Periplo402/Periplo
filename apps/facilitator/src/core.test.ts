@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { createFacilitatorCore } from "./core.js";
 import { loadStellarTestEnv } from "./test-env.js";
 
@@ -15,7 +15,16 @@ import { loadStellarTestEnv } from "./test-env.js";
 const env = loadStellarTestEnv();
 
 describe.skipIf(!env)("createFacilitatorCore: real testnet (spec Phase 3 gate)", () => {
-  const { feeSponsorSecret } = env as NonNullable<typeof env>;
+  // `describe.skipIf` only skips the `it` bodies below, not this factory
+  // itself (vitest still runs it during collection), so `env` cannot be
+  // destructured here directly: with no credentials `env` is `null` and
+  // this would throw even for a suite that is meant to skip cleanly.
+  // Deferred into `beforeAll`, which `skipIf` does not invoke.
+  let feeSponsorSecret: string;
+
+  beforeAll(() => {
+    ({ feeSponsorSecret } = env as NonNullable<typeof env>);
+  });
 
   it("boots successfully with a real, funded, fee-only testnet account", async () => {
     const core = await createFacilitatorCore({ signers: { "stellar:testnet": feeSponsorSecret } });

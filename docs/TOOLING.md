@@ -31,7 +31,8 @@ pnpm lint:fix           # biome check --write .
 pnpm test               # vitest run, workspace-wide
 pnpm test:watch
 pnpm licence-check      # AGPL/copyleft gate, see CLAUDE.md's non-negotiable constraints
-pnpm run ci             # typecheck && lint && test && licence-check, in that order
+pnpm audit --prod       # dependency advisory gate, production graph only (spec §6/§7)
+pnpm run ci             # typecheck && lint && test && licence-check && audit --prod, in that order
 ```
 
 **Use `pnpm run ci`, not bare `pnpm ci`.** `ci` is a reserved pnpm CLI
@@ -44,6 +45,11 @@ command during Phase 4 (`pnpm help ci` confirms the alias); every
 individual step (`typecheck`/`lint`/`test`/`licence-check`) was still run
 and verified separately throughout Phases 0-3, so this was a misleading
 shortcut, not a gap in what actually got checked.
+
+One advisory (`GHSA-mrhx-c7xc-m3w5`, zod) is ignored on purpose via
+`pnpm-workspace.yaml`'s `auditConfig.ignoreGhsas`; see the comment above
+that entry for why forcing a fix would be worse than the advisory as
+scoped to this repo's actual dependency paths.
 
 Run a single test file: `pnpm exec vitest run path/to/file.test.ts`.
 

@@ -281,6 +281,16 @@ Upstream issues and PRs cited in the docs are re-checked by the
   right before pushing if `main` may have moved, push the branch (not
   `:main`), then `gh pr create` and report the URL; do not treat a
   deadline as grounds to push directly instead of opening the PR in time.
+  Branch protection on `main` requires 1 approving review
+  (`enforce_admins: false`); do not attempt `gh pr merge --admin` or any
+  other review-bypass path to get around a pending review, even with an
+  explicit go-ahead in the conversation. Confirmed 2026-10-22: Claude
+  Code's own auto-mode safety classifier blocks a "Merge Without Review"
+  action at the harness level regardless of in-chat confirmation, and
+  even blocks an unrelated read-only command (`git fetch`/`git log`)
+  immediately after the attempt. When a PR is green but unreviewed, ask
+  the project owner to merge it from GitHub directly rather than trying
+  to force it through.
 
 ## Environment notes specific to this machine
 

@@ -461,10 +461,10 @@ thing.
   mixed-namespace registration (fails) against single-namespace
   registration (works as intended). Filed as
   [x402-foundation/x402#3172](https://github.com/x402-foundation/x402/issues/3172).
-  **Status: fixed, not just filed.** We proposed the fix ourselves rather
+  **Status: merged.** We proposed the fix ourselves rather
   than waiting on a maintainer:
   [x402-foundation/x402#3215](https://github.com/x402-foundation/x402/pull/3215),
-  open and mergeable, 657 tests passing. `derivePattern()` now derives one
+  merged 2026-10-26 by @CarsonRoscoe. `derivePattern()` now derives one
   wildcard pattern per namespace present in a registration, instead of
   collapsing the whole call to a single literal pattern from the first
   network. Our first regression test was itself wrong: it assumed a
@@ -479,7 +479,8 @@ thing.
   check was failing because its one commit was unsigned. Fixed by amending
   it with a registered SSH signing key and force-pushing the same branch;
   GitHub's API confirms `verified: true` on the amended commit and the
-  check now passes. Still open, awaiting maintainer review.
+  check now passed, clearing the way for the maintainer review that
+  landed the merge.
 
   **2026-09-01: a deliberate, proactive pass over the latest published
   `@x402/core@2.24.0`, `@x402/stellar@2.24.0`, and
@@ -770,9 +771,9 @@ thing.
   documents for MCP tools. We found it through the live integration
   test, not by reading the code, and filed it as
   [x402-foundation/x402#3121](https://github.com/x402-foundation/x402/issues/3121).
-  A fix is open against it as
+  **Status: merged.** A fix was proposed against it as
   [x402-foundation/x402#3138](https://github.com/x402-foundation/x402/pull/3138),
-  built scheme-agnostic per a reviewer's suggested shape rather than an
+  merged 2026-10-26 by @CarsonRoscoe, built scheme-agnostic per a reviewer's suggested shape rather than an
   `mcp://`-specific patch. That same reviewer, whawk46, later found a
   real follow-on gap in the fix itself (the opaque-origin branch skipped
   the query/fragment stripping the function exists to do), we
@@ -784,16 +785,19 @@ thing.
   query string surviving into the canonical URL means the same resource
   indexes under as many identities as it has session parameters, which
   is the kind of thing that quietly inflates a catalog and is very hard
-  to attribute afterward." The PR is open, mergeable, commented on three
+  to attribute afterward." Before merging, the PR was commented on three
   times by the person who reported the original bug, with a separate
   merge nudge from us the same week. **Precision check, 2026-08-23:**
-  GitHub's own review API reports zero formal reviews on this PR
-  (`reviews: []`); whawk46's "LGTM"/"nothing further" language is plain
-  comment text, not a submitted GitHub review, and we have not confirmed
-  whawk46 holds a maintainer or write-access role on this repo. Stated
-  here as what it is: a positive, substantive comment from the person who
-  reported the original bug, not a formal or authoritative approval.
-  Still open, blocked on a maintainer actually merging it.
+  GitHub's own review API reports zero formal reviews on this PR at that
+  point (`reviews: []`); whawk46's "LGTM"/"nothing further" language was
+  plain comment text, not a submitted GitHub review, and we had not
+  confirmed whawk46 holds a maintainer or write-access role on this repo.
+  Stated here as what it was then: a positive, substantive comment from
+  the person who reported the original bug, not a formal or authoritative
+  approval. The PR was later rebased onto `main` (261 commits behind by
+  then) to clear a lint check that had regressed independently of this
+  diff, re-signed, and formally approved and merged by @CarsonRoscoe on
+  2026-10-26.
 
   Reviewing the same `@x402/extensions/bazaar` package a second time
   turned up another real bug, this one in `isValidRouteTemplate`

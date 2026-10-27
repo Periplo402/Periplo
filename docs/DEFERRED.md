@@ -671,13 +671,14 @@ single-decode one is not yet, pending the project owner's go-ahead
    against live Supabase surfaced a wrong catalog `url` value. Worked
    around in `discovery.ts` by reconstructing the URL from `toolName`
    directly, bypassing the broken helper's output for MCP resources only.
-   **Filed:** [x402-foundation/x402#3121](https://github.com/x402-foundation/x402/issues/3121).
-   **Fix open:** [x402-foundation/x402#3138](https://github.com/x402-foundation/x402/pull/3138),
-   built to the scheme-agnostic shape a reviewer (whawk46) suggested in the
-   issue thread rather than an `mcp://`-specific patch, with a second
-   regression test on an unrelated made-up scheme so the fix cannot
-   regress the same way for the next undocumented scheme. Full detail in
-   `docs/INTEROP.md` §2.
+   **Filed:** [x402-foundation/x402#3121](https://github.com/x402-foundation/x402/issues/3121),
+   closed completed.
+   **Fix merged:** [x402-foundation/x402#3138](https://github.com/x402-foundation/x402/pull/3138),
+   merged 2026-10-26 by @CarsonRoscoe, built to the scheme-agnostic shape
+   a reviewer (whawk46) suggested in the issue thread rather than an
+   `mcp://`-specific patch, with a second regression test on an unrelated
+   made-up scheme so the fix cannot regress the same way for the next
+   undocumented scheme. Full detail in `docs/INTEROP.md` §2.
 
 ### `resource.serviceName`/`tags`/`iconUrl` are sanitized by upstream but have no catalog column yet
 

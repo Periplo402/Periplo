@@ -144,8 +144,13 @@ a real `Signer::Delegated` smart-account authorization has since settled
 on testnet for a single-context call
 ([`428021a6…`](https://stellar.expert/explorer/testnet/tx/428021a6ef648937bf0edeec96d42f13e44447eac9b036c127c90cf4bebdd71b)),
 while the full two-context `upto` settle path through the delegated
-account is still open, now failing with a typed `UnvalidatedContext`
-rather than the original opaque trap. Rewrote `#3098` to state the
+account was still open at the time, failing with a typed
+`UnvalidatedContext` rather than the original opaque trap. **Update,
+2026-10-27: that two-context case is now closed too**
+([`d493b6f5…`](https://stellar.expert/explorer/testnet/tx/d493b6f5d16e0ac8002e115470d634bb0ab87f23e167890406a3d8922260961b),
+once `stellar-accounts 0.8.0`'s structured auth-digest preimage
+shipped; see `docs/DEFERRED.md`'s Phase 6b section). Rewrote `#3098` to
+state the
 caveat plainly rather than let a
 reviewer implement against an unqualified claim, and to actually
 implement the maintainer-agreed consolidation structure (`stateless` as
@@ -1290,7 +1295,7 @@ thing.
     usage is zero, and a second attempt with the same authorization was
     rejected on-chain (`AuthorizationConsumed`): the nonce is consumed
     even when the charge is zero.
-  - **OpenZeppelin integration: in progress, not complete.** `budget.rs`
+  - **OpenZeppelin integration: complete.** `budget.rs`
     (budget reconciliation tied to `actual_amount`, not the signed
     ceiling) and
     [`contracts/agent-smart-account`](contracts/agent-smart-account) (a
@@ -1302,13 +1307,17 @@ thing.
     auth-discovery gap, not a contract bug (via
     [#863](https://github.com/OpenZeppelin/stellar-contracts/issues/863)).
     A real signed testnet transaction where a `Signer::Delegated` smart
-    account is `authorization.from` now exists for a single-context call
+    account is `authorization.from` exists for a single-context call
     ([`428021a6…`](https://stellar.expert/explorer/testnet/tx/428021a6ef648937bf0edeec96d42f13e44447eac9b036c127c90cf4bebdd71b),
-    Horizon-verified). The full two-context `UptoSettlement.settle()` +
-    nested `transfer` through the smart account is still open, now
-    failing with a typed `Error(Contract, #3002)` (`UnvalidatedContext`)
-    rather than the opaque trap. See `docs/DEFERRED.md`'s Phase 6b
-    section for the exact state and the remaining candidates.
+    Horizon-verified), and, as of 2026-10-27, for the full two-context
+    `UptoSettlement.settle()` + nested `transfer` too
+    ([`d493b6f5…`](https://stellar.expert/explorer/testnet/tx/d493b6f5d16e0ac8002e115470d634bb0ab87f23e167890406a3d8922260961b)),
+    once `OpenZeppelin/stellar-contracts#868`'s structured auth-digest
+    preimage shipped in `stellar-accounts 0.8.0`, replacing the
+    raw-digest construction that the two-context case had failed with
+    (`Error(Contract, #3002)`, `UnvalidatedContext`). See
+    `docs/DEFERRED.md`'s Phase 6b section for the full history and the
+    independent three-way verification.
 
 ## What Periplo is (planned)
 

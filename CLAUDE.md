@@ -21,8 +21,9 @@ starts. Read it before starting any phase, and do not start a phase whose
 predecessor has not cleared its gate.
 
 **Current status:** Phase 6 (`upto` on Stellar) is complete. Phase 6b
-(additional evidence, not a tranche deliverable) has contract-level results
-and one open blocker, described below. Phase 7 (MCP discovery server) is not
+(additional evidence, not a tranche deliverable) is also complete as of
+2026-10-27: its one open blocker, the two-context `settle()` case, is
+resolved, described below. Phase 7 (MCP discovery server) is not
 started. Seller-side and buyer-side helper libraries exist in
 `packages/helpers`; the sponsor-key rotation runbook and runway monitoring are
 in [`docs/OPERATIONS.md`](docs/OPERATIONS.md). Remaining gaps are tracked, not
@@ -203,16 +204,20 @@ that have not started (spec §12: no invented scope).
   reviewers are exempt). To find them use `grep -rl $'\xe2\x80\x94'`; the
   `-P` form gives false positives here.
 
-### Phase 6b: `agent-smart-account` (open blocker)
+### Phase 6b: `agent-smart-account` (resolved 2026-10-27)
 
 `contracts/agent-verifier`, `contracts/agent-smart-account` and
 `contracts/upto-settlement/src/budget.rs` build on OpenZeppelin's
-`stellar-accounts`. Zero-settlement is done and evidenced (`conformance/RESULTS.md`).
-A single-context `Signer::Delegated` authorization settled for real
-([`428021a6...`](https://stellar.expert/explorer/testnet/tx/428021a6ef648937bf0edeec96d42f13e44447eac9b036c127c90cf4bebdd71b)).
-The full two-context `settle()` plus nested `transfer` still fails with
-`UnvalidatedContext #3002`, and no real signed transaction exists for
-`agent-smart-account` itself.
+`stellar-accounts`, now pinned to `0.8.0` (`soroban-sdk 28.0.0`). Both
+contracts need `stellar contract build`, not a bare `cargo build --release
+--target wasm32v1-none`: this `soroban-sdk` line requires `stellar-cli
+v25.2.0+` to orchestrate the build. Zero-settlement
+(`conformance/RESULTS.md`), a single-context `Signer::Delegated`
+authorization
+([`428021a6...`](https://stellar.expert/explorer/testnet/tx/428021a6ef648937bf0edeec96d42f13e44447eac9b036c127c90cf4bebdd71b)),
+and now the full two-context `settle()` plus nested `transfer`
+([`d493b6f5...`](https://stellar.expert/explorer/testnet/tx/d493b6f5d16e0ac8002e115470d634bb0ab87f23e167890406a3d8922260961b))
+have all settled for real.
 
 - `OpenZeppelin/stellar-contracts#839` was closed COMPLETED on 2026-09-02: the
   trap was never `__check_auth`, it was a discovery gap (recording-mode
@@ -220,16 +225,19 @@ The full two-context `settle()` plus nested `transfer` still fails with
   address cannot be discovered). Root cause found through an independent
   reproduction, filed as
   [`OZ#863`](https://github.com/OpenZeppelin/stellar-contracts/issues/863).
-- `OZ#868` (merged 2026-09-10) changes what `Signer::Delegated` authorizes to an
-  `AuthDigestPreimage` struct. It ships only in the unreleased `0.8.0`.
-- `OZ#866` (merged 2026-09-26) moves `stellar-accounts` `main` to
-  `soroban-sdk 28.0.0` and fixes `OZ#865`. No release contains it:
-  `stellar-accounts` on crates.io is still `0.7.2` (checked 2026-09-26).
-- `agent-smart-account` and `agent-verifier` stay on `soroban-sdk 26.1.1`
-  because `stellar-accounts 0.7.2` requires `^26.1`.
-- Decision: wait for the `0.8.0` release before re-attempting the two-context
-  case; do not pin a git rev, and do not reopen `#839` without a new concrete
-  trigger. Full history in `docs/DEFERRED.md`'s Phase 6b section.
+- `OZ#868` (merged 2026-09-10) changed what `Signer::Delegated` authorizes to
+  an `AuthDigestPreimage` struct, replacing the raw-digest nested-entry
+  argument that trapped on the two-context case with `UnvalidatedContext
+  #3002`. Shipped in `stellar-accounts 0.8.0`, published 2026-10-20.
+- `agent-smart-account` moved back to `Signer::Delegated` (from the
+  `Signer::External` this repo committed after ruling out signer type as
+  the real differentiator) to re-run the retry this fix unblocked:
+  `apps/facilitator/scripts/agent-smart-account-settle-demo.ts`'s delegate
+  entry now carries `AuthDigestPreimage`, built via `smart-account-kit@0.9.1`'s
+  real `computeEntryAuthDigest(..., "preimage-v1")`, not hand-rolled.
+  Redeployed at `CA2UIDXPSECCJLK3ZBIMCBCWTIMDRC4NPNPABVFYH2IH35ACIY6ILW5H`.
+  Full history, including the independent three-way verification, in
+  `docs/DEFERRED.md`'s Phase 6b section.
 
 Upstream issues and PRs cited in the docs are re-checked by the
 `upstream-github-check` skill; `docs/DEFERRED.md` is the record.

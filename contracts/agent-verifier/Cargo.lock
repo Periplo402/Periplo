@@ -6,8 +6,8 @@ version = 4
 name = "agent-verifier"
 version = "0.1.0"
 dependencies = [
- "ed25519-dalek",
- "rand_core",
+ "ed25519-dalek 3.0.0",
+ "rand_core 0.6.4",
  "soroban-sdk",
  "stellar-accounts",
 ]
@@ -369,7 +369,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0dc92fb57ca44df6db8059111ab3af99a63d5d0f8375d9972e319a379c6bab76"
 dependencies = [
  "generic-array",
- "rand_core",
+ "rand_core 0.6.4",
  "subtle",
  "zeroize",
 ]
@@ -391,6 +391,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ce6e4c961d6cd6c9a86db418387425e8bdeaf05b3c8bc1411e6dca4c252f1453"
 dependencies = [
  "hybrid-array",
+ "rand_core 0.10.1",
 ]
 
 [[package]]
@@ -436,6 +437,7 @@ dependencies = [
  "curve25519-dalek-derive",
  "digest 0.11.3",
  "fiat-crypto 0.3.0",
+ "rand_core 0.10.1",
  "rustc_version",
  "subtle",
 ]
@@ -646,7 +648,7 @@ dependencies = [
  "digest 0.10.7",
  "elliptic-curve",
  "rfc6979",
- "signature",
+ "signature 2.2.0",
 ]
 
 [[package]]
@@ -656,7 +658,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "115531babc129696a58c64a4fef0a8bf9e9698629fb97e9e40767d235cfbcd53"
 dependencies = [
  "pkcs8",
- "signature",
+ "signature 2.2.0",
+]
+
+[[package]]
+name = "ed25519"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "29fcf32e6c73d1079f83ab4d782de2d81620346a5f38c6237a86a22f8368980a"
+dependencies = [
+ "signature 3.0.0",
 ]
 
 [[package]]
@@ -666,12 +677,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "70e796c081cee67dc755e1a36a0a172b897fab85fc3f6bc48307991f64e4eca9"
 dependencies = [
  "curve25519-dalek 4.1.3",
- "ed25519",
- "rand_core",
+ "ed25519 2.2.3",
+ "rand_core 0.6.4",
  "serde",
- "sha2",
+ "sha2 0.10.9",
  "subtle",
  "zeroize",
+]
+
+[[package]]
+name = "ed25519-dalek"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6ebaa1a2bf1290ab3bfe5a7b771d050ebffab2711c19a81691c683a5144a25de"
+dependencies = [
+ "curve25519-dalek 5.0.0",
+ "ed25519 3.0.0",
+ "rand_core 0.10.1",
+ "sha2 0.11.1",
+ "signature 3.0.0",
+ "subtle",
 ]
 
 [[package]]
@@ -704,7 +729,7 @@ dependencies = [
  "ff",
  "generic-array",
  "group",
- "rand_core",
+ "rand_core 0.6.4",
  "sec1",
  "subtle",
  "zeroize",
@@ -754,7 +779,7 @@ version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c0b50bfb653653f9ca9095b427bed08ab8d75a137839d9ad64eb11810d5b6393"
 dependencies = [
- "rand_core",
+ "rand_core 0.6.4",
  "subtle",
 ]
 
@@ -837,7 +862,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f0f9ef7462f7c099f518d754361858f86d8a07af53ba9af0fe635bbccb151a63"
 dependencies = [
  "ff",
- "rand_core",
+ "rand_core 0.6.4",
  "subtle",
 ]
 
@@ -1067,7 +1092,7 @@ dependencies = [
  "cfg-if",
  "ecdsa",
  "elliptic-curve",
- "sha2",
+ "sha2 0.10.9",
 ]
 
 [[package]]
@@ -1174,7 +1199,7 @@ dependencies = [
  "ecdsa",
  "elliptic-curve",
  "primeorder",
- "sha2",
+ "sha2 0.10.9",
 ]
 
 [[package]]
@@ -1274,7 +1299,7 @@ checksum = "22f6172bdec972074665ed81ed53b71da00bfc44b65a753cfde883ec4c702a1a"
 dependencies = [
  "libc",
  "rand_chacha",
- "rand_core",
+ "rand_core 0.6.4",
 ]
 
 [[package]]
@@ -1284,7 +1309,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88"
 dependencies = [
  "ppv-lite86",
- "rand_core",
+ "rand_core 0.6.4",
 ]
 
 [[package]]
@@ -1295,6 +1320,12 @@ checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
 ]
+
+[[package]]
+name = "rand_core"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "63b8176103e19a2643978565ca18b50549f6101881c443590420e4dc998a3c69"
 
 [[package]]
 name = "ref-cast"
@@ -1500,6 +1531,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha2"
+version = "0.11.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "47d7069beb7d6ac7b9acd1039986e73443f24234f41074da099d6f994ac9ad19"
+dependencies = [
+ "cfg-if",
+ "cpufeatures 0.3.0",
+ "digest 0.11.3",
+]
+
+[[package]]
 name = "sha3"
 version = "0.10.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1522,7 +1564,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77549399552de45a898a580c1b41d445bf730df867cc44e6c0233bbc4b8329de"
 dependencies = [
  "digest 0.10.7",
- "rand_core",
+ "rand_core 0.6.4",
+]
+
+[[package]]
+name = "signature"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "28d567dcbaf0049cb8ac2608a76cd95ff9e4412e1899d389ee400918ca7537f5"
+dependencies = [
+ "rand_core 0.10.1",
 ]
 
 [[package]]
@@ -1591,7 +1642,7 @@ dependencies = [
  "ark-serialize",
  "curve25519-dalek 5.0.0",
  "ecdsa",
- "ed25519-dalek",
+ "ed25519-dalek 2.2.0",
  "elliptic-curve",
  "generic-array",
  "getrandom",
@@ -1605,7 +1656,7 @@ dependencies = [
  "rand",
  "rand_chacha",
  "sec1",
- "sha2",
+ "sha2 0.10.9",
  "sha3",
  "soroban-builtin-sdk-macros",
  "soroban-env-common",
@@ -1655,7 +1706,7 @@ dependencies = [
  "crate-git-revision 0.0.9",
  "ctor",
  "derive_arbitrary",
- "ed25519-dalek",
+ "ed25519-dalek 2.2.0",
  "rand",
  "rustc_version",
  "serde",
@@ -1680,7 +1731,7 @@ dependencies = [
  "macro-string",
  "proc-macro2",
  "quote",
- "sha2",
+ "sha2 0.10.9",
  "soroban-env-common",
  "soroban-spec",
  "soroban-spec-rust",
@@ -1695,7 +1746,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2f48c8e183fc140ccd89e1fe1663cc605fb18641967c0bb591f64887599fde59"
 dependencies = [
  "base64",
- "sha2",
+ "sha2 0.10.9",
  "stellar-xdr",
  "thiserror 1.0.69",
  "wasmparser",
@@ -1710,7 +1761,7 @@ dependencies = [
  "prettyplease",
  "proc-macro2",
  "quote",
- "sha2",
+ "sha2 0.10.9",
  "soroban-spec",
  "stellar-xdr",
  "syn 2.0.119",
@@ -1805,7 +1856,7 @@ dependencies = [
  "hex",
  "serde",
  "serde_with",
- "sha2",
+ "sha2 0.10.9",
  "stellar-strkey 0.0.13",
 ]
 

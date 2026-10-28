@@ -18,7 +18,7 @@ stellar-accounts = "0.8.0"
 
 [dev-dependencies]
 soroban-sdk = { version = "28.0.0", features = ["testutils"] }
-ed25519-dalek = { version = "2.1.1", default-features = false, features = ["rand_core"] }
+ed25519-dalek = { version = "3.0.0", default-features = false, features = ["rand_core"] }
 rand_core = { version = "0.6", default-features = false, features = ["getrandom"] }
 
 [profile.release]

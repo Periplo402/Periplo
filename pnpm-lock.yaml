@@ -58,8 +58,8 @@ importers:
         specifier: 2.22.0
         version: 2.22.0(hono@4.13.13)(typescript@7.0.2)
       '@x402/stellar':
-        specifier: 2.22.0
-        version: 2.22.0(debug@4.4.3)
+        specifier: 2.28.0
+        version: 2.28.0(debug@4.4.3)
       esbuild:
         specifier: 0.28.2
         version: 0.28.2
@@ -162,8 +162,8 @@ importers:
         specifier: 2.22.0
         version: 2.22.0(typescript@7.0.2)
       '@x402/stellar':
-        specifier: 2.22.0
-        version: 2.22.0(debug@4.4.3)
+        specifier: 2.28.0
+        version: 2.28.0(debug@4.4.3)
     devDependencies:
       typescript:
         specifier: 7.0.2
@@ -894,6 +894,9 @@ packages:
   '@x402/core@2.22.0':
     resolution: {integrity: sha512-hYySs/PvukqRipC2mKqrsn/jx2U/p5EGnN3clQ2CIcApwtoFuG77CqpC3Wy7Fdp/juW8t8quiPVnqGuIkfix1Q==}
 
+  '@x402/core@2.28.0':
+    resolution: {integrity: sha512-Da/7zKxCKqpBoB4Msc9tFgkAv7tJTD8nG+DSSm+QdXAyJS4PQsmgVSKe17rDJTtlu0pwNbLcOje6MyQ6kaDkig==}
+
   '@x402/extensions@2.22.0':
     resolution: {integrity: sha512-E5Ma1Fs1GwO/ET7KtGUI7dPuVFoINR+mwTWVoGdNi3DsJBJKDWSA7Ta7bDgSANzV3XCAMK9gvz/VSItZliApMA==}
 
@@ -906,8 +909,8 @@ packages:
       '@x402/paywall':
         optional: true
 
-  '@x402/stellar@2.22.0':
-    resolution: {integrity: sha512-nih0BKl+6EaWrfaocm9/uu1YPfGS+QzmjI9ZY/nNbm05Z2las92rDqxqYWVXEeWz0QNtav3E3w45ctBpTvbakg==}
+  '@x402/stellar@2.28.0':
+    resolution: {integrity: sha512-H/P46YVVEvJmnXlss8fJBNGgjaLkp3pWJ6PH2uOJY+jVemugUoQPArwtQKNovEV2BnF0gnJ+sdaRg+4Gucu6jQ==}
     engines: {node: '>=22.0.0'}
 
   abitype@1.2.3:
@@ -2133,6 +2136,10 @@ snapshots:
     dependencies:
       zod: 3.25.76
 
+  '@x402/core@2.28.0':
+    dependencies:
+      zod: 3.25.76
+
   '@x402/extensions@2.22.0(typescript@7.0.2)':
     dependencies:
       '@noble/curves': 1.9.7
@@ -2161,10 +2168,10 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@x402/stellar@2.22.0(debug@4.4.3)':
+  '@x402/stellar@2.28.0(debug@4.4.3)':
     dependencies:
       '@stellar/stellar-sdk': 16.3.0(debug@4.4.3)
-      '@x402/core': 2.22.0
+      '@x402/core': 2.28.0
     transitivePeerDependencies:
       - debug
       - supports-color

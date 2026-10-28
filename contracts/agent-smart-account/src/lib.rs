@@ -9,30 +9,36 @@
 //! `OpenZeppelin/stellar-contracts`), adapted from that crate's own
 //! `multisig-smart-account` example: same `SmartAccount`/
 //! `CustomAccountInterface` wiring, one `ContextRule` instead of many, a
-//! single `Signer::External` instead of a threshold policy (this contract
+//! single `Signer::Delegated` instead of a threshold policy (this contract
 //! isn't a multisig, it's a single-key agent account), and no
 //! `ExecutionEntryPoint`/`Upgradeable` (this account never initiates calls
 //! on its own behalf and isn't upgradeable, so both would be unused
 //! surface area).
 //!
-//! ## Why `Signer::External`, not `Signer::Delegated`
+//! ## `Signer::Delegated`: back after `Signer::External` was ruled out too
 //!
-//! The first version of this contract used `Signer::Delegated(agent_key)`.
-//! Every real transaction built against it trapped inside `__check_auth`
-//! (`UnreachableCodeReached`), and an extensive isolation process never
-//! found the cause; see `docs/DEFERRED.md`'s Phase 6b section and
-//! `OpenZeppelin/stellar-contracts#839`. Reviewing
-//! `stellar_accounts::smart_account::storage::authenticate`'s two arms
-//! side by side explains why `Delegated` is the harder path structurally:
-//! it verifies via `addr.require_auth_for_args((auth_digest,))`, which
-//! requires a *second*, separately signed `SorobanAuthorizationEntry`
-//! nested inside the account's own entry, hand-constructed since
-//! simulation's `needsNonInvokerSigningBy()` only surfaces the top-level
-//! entry. `External`'s arm instead makes one cross-contract call to a
-//! deployed `Verifier` (`agent-verifier` in this repo, wrapping
-//! `stellar_accounts::verifiers::ed25519`) with a raw Ed25519 signature,
-//! entirely inside the smart account's own single entry: no nested entry,
-//! no second signer to coordinate.
+//! The original build used `Signer::Delegated(agent_key)`; every real
+//! transaction trapped inside `__check_auth` (`UnreachableCodeReached`,
+//! `OpenZeppelin/stellar-contracts#839`). A full retry with
+//! `Signer::External` (a direct signature check against a deployed
+//! `Verifier`, no nested entry) hit the identical trap, ruling out the
+//! signer type itself as the differentiator; `#863` (closing `#839`) then
+//! explained the real cause: Soroban's recording-mode simulation never
+//! invokes `__check_auth`'s body, so a `Delegated` signer's nested
+//! `require_auth_for_args` call can't be discovered ahead of time and has
+//! to be hand-constructed. Once that was understood, a single-context
+//! `Delegated` call settled for real on testnet; the two-context case
+//! (this contract's actual shape, settle + its nested transfer) still
+//! failed with a typed `Error(Contract, #3002)`
+//! (`SmartAccountError::UnvalidatedContext`). `OpenZeppelin/stellar-contracts#868`
+//! (`stellar-accounts` 0.8.0) replaced the raw-digest nested-entry argument
+//! with a structured `AuthDigestPreimage { account, signature_payload,
+//! context_rule_ids }`, confirming the old raw-digest shape as a
+//! known-wrong pattern, but shipped no multi-`ContextRule` delegate test
+//! of its own. This build is the retry that pin unblocks: back to
+//! `Signer::Delegated`, the nested entry now carrying `AuthDigestPreimage`
+//! instead of a raw digest. See `docs/DEFERRED.md`'s Phase 6b section for
+//! the full history and this retry's real, on-chain result.
 //!
 //! ## Why `CallContract`, not `Default`
 //!
@@ -76,10 +82,11 @@ use soroban_sdk::{
     auth::{Context, CustomAccountInterface},
     contract, contractimpl,
     crypto::Hash,
-    Address, Bytes, BytesN, Env, Map, String, Val, Vec,
+    Address, BytesN, Env, Map, String, Val, Vec,
 };
 use stellar_accounts::smart_account::{
-    self, AuthPayload, ContextRule, ContextRuleType, Signer, SmartAccount, SmartAccountError,
+    self, AuthDigestPreimage, AuthPayload, ContextRule, ContextRuleType, Signer, SmartAccount,
+    SmartAccountError,
 };
 
 #[contract]
@@ -89,21 +96,20 @@ pub struct AgentSmartAccount;
 impl AgentSmartAccount {
     /// Creates the account with exactly two context rules: authorize calls
     /// to `upto_settlement`, and authorize the SEP-41 `transfer` call
-    /// `settle` makes on `asset` to pull the buyer's funds. Both signed by
-    /// a raw Ed25519 signature over `agent_pubkey`, checked via a
-    /// cross-contract call to `verifier` (the deployed `agent-verifier`
-    /// contract). `agent_key` never needs to be a funded G-account or sign
-    /// a Soroban auth entry of its own: only the raw keypair matters,
-    /// `agent_pubkey` is its public half.
+    /// `settle` makes on `asset` to pull the buyer's funds. Both delegated
+    /// to `agent_key`, a classic G-account authenticated through
+    /// `require_auth_for_args((preimage,))` on a hand-constructed nested
+    /// entry (`stellar-accounts` 0.8.0's `AuthDigestPreimage`, replacing
+    /// the raw-digest construction that trapped before #868/#863; see
+    /// `docs/DEFERRED.md`'s Phase 6b section for why `Signer::Delegated`
+    /// rather than `Signer::External` for this retry).
     pub fn __constructor(
         e: &Env,
-        verifier: Address,
-        agent_pubkey: BytesN<32>,
+        agent_key: Address,
         upto_settlement: Address,
         asset: Address,
     ) {
-        let key_data = Bytes::from_slice(e, &agent_pubkey.to_array());
-        let signer = Signer::External(verifier, key_data);
+        let signer = Signer::Delegated(agent_key);
         smart_account::add_context_rule(
             e,
             &ContextRuleType::CallContract(upto_settlement),

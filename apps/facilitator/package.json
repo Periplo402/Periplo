@@ -28,6 +28,6 @@
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
-    "smart-account-kit": "^0.6.2"
+    "smart-account-kit": "0.9.1"
   }
 }

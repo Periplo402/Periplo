@@ -43,8 +43,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/search
       '@stellar/stellar-sdk':
-        specifier: 16.3.0
-        version: 16.3.0(debug@4.4.3)
+        specifier: 17.3.0
+        version: 17.3.0(debug@4.4.3)
       '@supabase/supabase-js':
         specifier: 2.112.3
         version: 2.112.3
@@ -78,13 +78,13 @@ importers:
         version: 1.62.1
       smart-account-kit:
         specifier: 0.9.1
-        version: 0.9.1(@stellar/stellar-sdk@16.3.0(debug@4.4.3))
+        version: 0.9.1(@stellar/stellar-sdk@17.3.0(debug@4.4.3))
 
   apps/site:
     dependencies:
       '@stellar/stellar-sdk':
-        specifier: 16.3.0
-        version: 16.3.0(debug@4.4.3)
+        specifier: 17.3.0
+        version: 17.3.0(debug@4.4.3)
       marked:
         specifier: 18.0.14
         version: 18.0.14
@@ -153,8 +153,8 @@ importers:
   packages/helpers:
     dependencies:
       '@stellar/stellar-sdk':
-        specifier: 16.3.0
-        version: 16.3.0(debug@4.4.3)
+        specifier: 17.3.0
+        version: 17.3.0(debug@4.4.3)
       '@x402/core':
         specifier: 2.22.0
         version: 2.22.0
@@ -427,6 +427,15 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@exodus/bytes@1.16.0':
+    resolution: {integrity: sha512-IcpW84uEn3N7ETtNZMlxKhfl6Pec8rUNGOTBtWbK1FKhJxIFAptZyVrvVRVBimAJxJCgc3PxepxkdWWG4DVzfA==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    peerDependencies:
+      '@noble/hashes': ^1.8.0 || ^2.0.0
+    peerDependenciesMeta:
+      '@noble/hashes':
+        optional: true
+
   '@hono/node-server@2.1.1':
     resolution: {integrity: sha512-ELuehkj5VCBdgEw9zs+ivkKwyzzUCSQuE96YmiPvn1ECBoZCczbFXJLeEGMTYjphP6gydh4pHMqEYPVMYUVgQg==}
     engines: {node: '>=20'}
@@ -666,9 +675,18 @@ packages:
     resolution: {integrity: sha512-+NmNa7Tk5BI5XFdy/6xGTqAN4J9a9KgCrCGhj2uEUTCBhLkch0M+QbKzNH8zEnejWe0p8w+0q5hUVX6L3OzoVA==}
     engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
 
+  '@stellar/js-xdr@5.0.0':
+    resolution: {integrity: sha512-HBDNKnxr+ecdaEmbZ0mcKkirOF8tXXEbWSw34P3wT40Tn3g+u+cCH17xAWZymzscq8cojHB8340pR8QNVaD32w==}
+    engines: {node: '>=22.0.0', pnpm: '>=10.0.0'}
+
   '@stellar/stellar-sdk@16.3.0':
     resolution: {integrity: sha512-pnB1t4bdnkN8M7tRIcLXnNboq+Hof62NzPMnQrl5MWBNC/d1vUbdrzXgy7yw8I+0hbfz5YN64uVb84BqzIpYiQ==}
     engines: {node: '>=22.0.0'}
+    hasBin: true
+
+  '@stellar/stellar-sdk@17.3.0':
+    resolution: {integrity: sha512-E9olNBk1FDTYSdGphd+U4EMlbRdkCQfveuK7/fhEtlEBl7GIoXtHHr0Hh6WcxIiO0/sRutsgapZDhhGpdd/Bqg==}
+    engines: {node: '>=22.12.0'}
     hasBin: true
 
   '@supabase/auth-js@2.112.3':
@@ -714,6 +732,9 @@ packages:
 
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
+
+  '@types/json-schema@7.0.15':
+    resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
   '@types/node@26.2.0':
     resolution: {integrity: sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==}
@@ -1800,6 +1821,10 @@ snapshots:
   '@esbuild/win32-x64@0.28.2':
     optional: true
 
+  '@exodus/bytes@1.16.0(@noble/hashes@2.3.0)':
+    optionalDependencies:
+      '@noble/hashes': 2.3.0
+
   '@hono/node-server@2.1.1(hono@4.13.13)':
     dependencies:
       hono: 4.13.13
@@ -1948,6 +1973,8 @@ snapshots:
 
   '@stellar/js-xdr@4.0.0': {}
 
+  '@stellar/js-xdr@5.0.0': {}
+
   '@stellar/stellar-sdk@16.3.0(debug@4.4.3)':
     dependencies:
       '@noble/ed25519': 3.1.0
@@ -1957,6 +1984,24 @@ snapshots:
       base32.js: 0.1.0
       bignumber.js: 11.1.5
       buffer: 6.0.3
+      commander: 14.0.3
+      eventsource: 4.1.1
+      feaxios: 0.0.23
+      smol-toml: 1.9.1
+      uint8array-extras: 1.5.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+
+  '@stellar/stellar-sdk@17.3.0(debug@4.4.3)':
+    dependencies:
+      '@exodus/bytes': 1.16.0(@noble/hashes@2.3.0)
+      '@noble/ed25519': 3.1.0
+      '@noble/hashes': 2.3.0
+      '@stellar/js-xdr': 5.0.0
+      '@types/json-schema': 7.0.15
+      axios: 1.20.0(debug@4.4.3)
+      bignumber.js: 11.1.5
       commander: 14.0.3
       eventsource: 4.1.1
       feaxios: 0.0.23
@@ -2010,6 +2055,8 @@ snapshots:
   '@types/deep-eql@4.0.2': {}
 
   '@types/estree@1.0.9': {}
+
+  '@types/json-schema@7.0.15': {}
 
   '@types/node@26.2.0':
     dependencies:
@@ -2671,17 +2718,17 @@ snapshots:
 
   siginfo@2.0.0: {}
 
-  smart-account-kit-bindings@0.5.0(@stellar/stellar-sdk@16.3.0(debug@4.4.3)):
+  smart-account-kit-bindings@0.5.0(@stellar/stellar-sdk@17.3.0(debug@4.4.3)):
     dependencies:
-      '@stellar/stellar-sdk': 16.3.0(debug@4.4.3)
+      '@stellar/stellar-sdk': 17.3.0(debug@4.4.3)
       buffer: 6.0.3
 
-  smart-account-kit@0.9.1(@stellar/stellar-sdk@16.3.0(debug@4.4.3)):
+  smart-account-kit@0.9.1(@stellar/stellar-sdk@17.3.0(debug@4.4.3)):
     dependencies:
       '@simplewebauthn/browser': 13.3.0
-      '@stellar/stellar-sdk': 16.3.0(debug@4.4.3)
+      '@stellar/stellar-sdk': 17.3.0(debug@4.4.3)
       base64url: 3.0.1
-      smart-account-kit-bindings: 0.5.0(@stellar/stellar-sdk@16.3.0(debug@4.4.3))
+      smart-account-kit-bindings: 0.5.0(@stellar/stellar-sdk@17.3.0(debug@4.4.3))
 
   smol-toml@1.9.1: {}
 

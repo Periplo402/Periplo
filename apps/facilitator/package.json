@@ -16,7 +16,7 @@
     "@periplo/bazaar": "workspace:*",
     "periplo": "workspace:*",
     "@periplo/search": "workspace:*",
-    "@stellar/stellar-sdk": "16.3.0",
+    "@stellar/stellar-sdk": "17.3.0",
     "@supabase/supabase-js": "2.112.3",
     "@x402/core": "2.22.0",
     "@x402/extensions": "2.22.0",

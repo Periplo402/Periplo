@@ -12,7 +12,7 @@
     "snapshot:upstream": "node scripts/snapshot-upstream.mjs"
   },
   "dependencies": {
-    "@stellar/stellar-sdk": "16.3.0",
+    "@stellar/stellar-sdk": "17.3.0",
     "marked": "18.0.14",
     "next": "16.4.3",
     "react": "19.3.0",

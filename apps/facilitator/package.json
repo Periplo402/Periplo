@@ -12,7 +12,7 @@
     "start": "node dist/serve.js"
   },
   "dependencies": {
-    "@hono/node-server": "2.1.1",
+    "@hono/node-server": "2.1.5",
     "@periplo/bazaar": "workspace:*",
     "periplo": "workspace:*",
     "@periplo/search": "workspace:*",

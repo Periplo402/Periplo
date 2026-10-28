@@ -10,7 +10,7 @@ architecture.
 | --- | --- | --- | --- |
 | Facilitator (`apps/facilitator`) | `verify`/`settle`/`supported`, automatic Bazaar cataloging, `GET /discovery/*`, the demo resource | Fly.io, app `periplo-testnet`, region `iad`, `stellar:testnet` only | [`fly.facilitator.toml`](../fly.facilitator.toml): `shared-cpu-1x`, 512MB, 1 machine, `min_machines_running = 1` (never scales to zero, spec §8's latency SLO) |
 | Catalog database | `resources` table, full-text + vector indexes, RLS | Supabase (managed Postgres + pgvector) | [`supabase/config.toml`](../supabase/config.toml), schema in [`supabase/migrations/`](../supabase/migrations). CI and the tests use a throwaway local stack instead; only the manual `prod-parity` workflow writes here |
-| Repository, CI | Source, `.github/workflows/ci.yml` | GitHub, `Eras256/Periplo` (public) | Free for a public repository |
+| Repository, CI | Source, `.github/workflows/ci.yml` | GitHub, `Periplo402/Periplo` (public, transferred from `Eras256/Periplo`) | Free for a public repository |
 | Contracts | `UptoSettlement`, `agent-verifier`, `agent-smart-account` | Stellar `testnet`, no separate hosting, they're on-chain | Deployed via the `stellar` CLI, addresses in `conformance/RESULTS.md` and `docs/DEFERRED.md` |
 
 **Not running:** `periplo-mainnet` (no mainnet fee-sponsor key exists

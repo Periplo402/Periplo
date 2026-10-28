@@ -77,8 +77,8 @@ importers:
         specifier: 1.62.1
         version: 1.62.1
       smart-account-kit:
-        specifier: ^0.6.2
-        version: 0.6.2(@stellar/stellar-sdk@16.3.0(debug@4.4.3))
+        specifier: 0.9.1
+        version: 0.9.1(@stellar/stellar-sdk@16.3.0(debug@4.4.3))
 
   apps/site:
     dependencies:
@@ -1447,17 +1447,17 @@ packages:
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
 
-  smart-account-kit-bindings@0.4.0:
-    resolution: {integrity: sha512-ZYzSr/K1xF8Jn76mhrmkWaZWH0P3KyOdNzoQykPbhEaDtL1X/a7JdxyrKM6rEeEaCh+k/7GhTarzH97hoV2zrQ==}
+  smart-account-kit-bindings@0.5.0:
+    resolution: {integrity: sha512-M6cEXuUwLg2mejn/Q2Hzbw8YhS5uVYm1GxE98U2sQIbS58XZSd5hZ5mye6nW0unpu+ridh+zLEINph9f+3qCwA==}
     peerDependencies:
-      '@stellar/stellar-sdk': '>=16.0.0'
+      '@stellar/stellar-sdk': ^16.3.0
 
-  smart-account-kit@0.6.2:
-    resolution: {integrity: sha512-ek7vC4/gQ57lj+1HTNdvIwF4oORvsNcKrCfriNg69Hi+kHFCthkvRyGg5EUNA2uf/AqYMnOjp0vejVoiege0tA==}
+  smart-account-kit@0.9.1:
+    resolution: {integrity: sha512-XUfK5/F7xjon2DJeBSedkmP27C+LyNcZ8/Yz5htahVsNmbJzf3/M3eo1ONOZn7+SuBsHdT7/ULryH4soptvaRg==}
     engines: {node: '>=22.0.0', pnpm: '>=10.0.0'}
     peerDependencies:
-      '@creit-tech/stellar-wallets-kit': '>=2.1.0'
-      '@stellar/stellar-sdk': '>=16.0.0'
+      '@creit-tech/stellar-wallets-kit': '>=2.1.0 <2.6.0'
+      '@stellar/stellar-sdk': ^16.3.0
     peerDependenciesMeta:
       '@creit-tech/stellar-wallets-kit':
         optional: true
@@ -2671,17 +2671,17 @@ snapshots:
 
   siginfo@2.0.0: {}
 
-  smart-account-kit-bindings@0.4.0(@stellar/stellar-sdk@16.3.0(debug@4.4.3)):
+  smart-account-kit-bindings@0.5.0(@stellar/stellar-sdk@16.3.0(debug@4.4.3)):
     dependencies:
       '@stellar/stellar-sdk': 16.3.0(debug@4.4.3)
       buffer: 6.0.3
 
-  smart-account-kit@0.6.2(@stellar/stellar-sdk@16.3.0(debug@4.4.3)):
+  smart-account-kit@0.9.1(@stellar/stellar-sdk@16.3.0(debug@4.4.3)):
     dependencies:
       '@simplewebauthn/browser': 13.3.0
       '@stellar/stellar-sdk': 16.3.0(debug@4.4.3)
       base64url: 3.0.1
-      smart-account-kit-bindings: 0.4.0(@stellar/stellar-sdk@16.3.0(debug@4.4.3))
+      smart-account-kit-bindings: 0.5.0(@stellar/stellar-sdk@16.3.0(debug@4.4.3))
 
   smol-toml@1.9.1: {}
 

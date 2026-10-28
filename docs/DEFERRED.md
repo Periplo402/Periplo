@@ -1549,6 +1549,75 @@ dependency, with the multi-context path still uncovered upstream. When
 delegate nested entry to carry the `AuthDigestPreimage` struct instead of
 the raw digest, and re-run the two-context `settle()` against testnet.
 
+### 2026-10-27: resolved. The two-context `settle()` blocker is closed, for real, on testnet
+
+`stellar-accounts 0.8.0` published 2026-10-20 (confirmed via
+`curl https://index.crates.io/st/el/stellar-accounts`, not yanked), the
+trigger this section named. The retry path defined above was followed
+exactly: `contracts/agent-smart-account` and `contracts/agent-verifier`
+bumped to `soroban-sdk 28.0.0`/`stellar-accounts 0.8.0`
+(`cargo build`/`cargo test` both needed the real `stellar contract build`
+orchestration this soroban-sdk line requires, not a bare
+`cargo build --release --target wasm32v1-none`; it refuses with "soroban-sdk
+requires stellar-cli v25.2.0+ to build a contract" otherwise, confirmed
+with `stellar-cli 27.1.0` already installed). `agent-smart-account`
+rebuilt for `Signer::Delegated` (back from the `Signer::External` this
+repo committed after the 2026-08-15 round ruled out signer type as the
+real differentiator): same two `ContextRule`s as the 2026-09-02 attempt
+(id 0 `UptoSettlement`, id 1 the asset), same `__check_auth` wiring.
+Redeployed fresh to `stellar:testnet` at
+`CA2UIDXPSECCJLK3ZBIMCBCWTIMDRC4NPNPABVFYH2IH35ACIY6ILW5H`, confirmed via
+`get_context_rule(0)`/`get_context_rule(1)` returning exactly the
+configured rules.
+
+The one real change from the 2026-09-02 attempt:
+`apps/facilitator/scripts/agent-smart-account-settle-demo.ts`'s delegate
+nested entry now carries a structured `AuthDigestPreimage { account,
+signature_payload, context_rule_ids }` as its `__check_auth` argument,
+not the old raw `sha256(signature_payload ++ context_rule_ids.to_xdr())`
+digest (`OpenZeppelin/stellar-contracts#868`'s own
+`delegated_signer_nested_entry_with_digest_argument_fails` test already
+named that old shape as known-wrong). Built via `smart-account-kit`'s
+real, published `computeEntryAuthDigest(..., "preimage-v1")`
+(`smart-account-kit` bumped `0.6.2` → `0.9.1`, the version whose own
+dependency on `@stellar/stellar-sdk` still matches this repo's pinned
+`16.3.0`; `0.10.0` needs `^16.4.1`), not hand-rolled a second time.
+Everything else in the script (extracting the smart account's own entry
+from simulation, building the separate delegate entry's root invocation
+and signature, re-simulating, signing, submitting) is unchanged from the
+attempt that failed with `UnvalidatedContext #3002`, isolating the
+digest scheme as the one variable that changed.
+
+**Real, signed, settled, independently verified three ways, not just
+trusted from the script's own "SUCCESS" output:**
+[`d493b6f5d16e0ac8002e115470d634bb0ab87f23e167890406a3d8922260961b`](https://stellar.expert/explorer/testnet/tx/d493b6f5d16e0ac8002e115470d634bb0ab87f23e167890406a3d8922260961b),
+ledger `5424730`. (1) Horizon confirms `successful: true`,
+`fee_charged: 6050447` stroops (a genuinely expensive multi-auth
+invocation), source account the fee-sponsor. (2) Horizon's own
+`/effects` for the transaction shows `account_credited` the seller
+exactly `0.0400000 PTEST`, the real `actual_amount` (`400_000` of a
+`1_000_000`/`0.1 PTEST` signed ceiling), not the ceiling itself. (3) The
+smart account's own on-chain SAC balance, read directly via
+`stellar contract invoke ... -- balance --id
+CA2UIDXPSECCJLK3ZBIMCBCWTIMDRC4NPNPABVFYH2IH35ACIY6ILW5H`, dropped from
+`10_000_000` to `9_600_000`, exactly `400_000` (the actual charge, not
+the `1_000_000` ceiling), confirming the pull-then-refund mechanic
+completed and only the real charge stuck, the same claim every other
+`upto` settlement row in `conformance/RESULTS.md` makes.
+
+**What this closes, stated precisely**: the specific two-context
+`settle()` + nested `transfer` case that failed `UnvalidatedContext
+#3002` under the pre-`#868` raw-digest construction now succeeds under
+`AuthDigestPreimage`. This does not retroactively explain *why* the old
+construction failed `#3002` specifically (that root cause was never
+found, per the 2026-09-02 entry above); it confirms that the fix
+`OpenZeppelin/stellar-contracts#868` shipped, despite adding no
+multi-`ContextRule` delegate test of its own, does cover this case in
+practice. `agent-smart-account`'s committed contract moves to
+`Signer::Delegated` as a result (see this file's own module doc for the
+updated history); `Signer::External` stays ruled out as documented, not
+revisited.
+
 ### The `soroban-sdk ^26.1` vs `27.x` mismatch was tested directly as a cause of the trap, and ruled out
 
 Before treating the trap above as a real, independent problem worth an
@@ -3014,9 +3083,10 @@ section has been waiting on: the `Signer::Delegated` redefinition to the
 cyclic/self-referential `Delegated` signer
 (`GHSA-jpg9-m7w4-c7wc`, patched first in `0.7.3`, same day). This is the
 trigger this section's 2026-09-10 decision named: "wait for the official
-`0.8.0` release before re-attempting the two-context case." **Noted as a
-trigger only, not acted on**: the two-context `UnvalidatedContext #3002`
-re-attempt itself has not been started.
+`0.8.0` release before re-attempting the two-context case." **Update,
+2026-10-27: the re-attempt happened and succeeded**, see this file's own
+"resolved" entry further up this section
+([`d493b6f5…`](https://stellar.expert/explorer/testnet/tx/d493b6f5d16e0ac8002e115470d634bb0ab87f23e167890406a3d8922260961b)).
 
 ## Helper library and mainnet-ops roadmap, opened 2026-09-10
 

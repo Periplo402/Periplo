@@ -3,17 +3,30 @@
  * real, signed `UptoSettlement.settle()` call where `authorization.from` is
  * a Phase 6b `agent-smart-account` (OpenZeppelin `stellar-accounts`,
  * `Signer::Delegated`) instead of a plain G-account buyer, closing the one
- * gap `docs/DEFERRED.md`'s Phase 6b section names as still open.
+ * gap `docs/DEFERRED.md`'s Phase 6b section names as still open: the
+ * two-context `settle()` + nested `transfer` case that previously failed
+ * `Error(Contract, #3002)` (`SmartAccountError::UnvalidatedContext`) under
+ * `stellar-accounts` 0.7.2's raw-digest nested-entry construction.
  *
- * The blocker this script exists to test past: `AssembledTransaction`'s
- * standard discovery flow (`needsNonInvokerSigningBy()`) never surfaces the
- * delegate's own signing requirement for a `Signer::Delegated` smart
- * account, because Soroban's recording-mode simulation never actually
- * invokes `__check_auth`'s body, so a `require_auth_for_args()` call that
- * only happens inside it can't be discovered ahead of time
- * (`OpenZeppelin/stellar-contracts#863`, closing
- * `OpenZeppelin/stellar-contracts#839`). This script hand-constructs both
- * required entries instead of trusting that discovery flow:
+ * This retry (`stellar-accounts` 0.8.0, `OpenZeppelin/stellar-contracts#868`)
+ * carries the delegate's nested entry as a structured `AuthDigestPreimage {
+ * account, signature_payload, context_rule_ids }` instead of a raw
+ * `sha256(signature_payload ++ context_rule_ids.to_xdr())` digest, using
+ * `smart-account-kit@0.9.1`'s real, published `computeEntryAuthDigest`
+ * (scheme `"preimage-v1"`) rather than hand-rolling the XDR a second time.
+ * Everything else (extracting the smart account's own entry from
+ * simulation, building the separate delegate entry, re-simulating, signing,
+ * submitting) is unchanged from the prior attempt, which is what this
+ * script is isolating: only the digest scheme changed.
+ *
+ * The blocker the prior attempt (and `OpenZeppelin/stellar-contracts#863`,
+ * closing `#839`) explains: `AssembledTransaction`'s standard discovery flow
+ * (`needsNonInvokerSigningBy()`) never surfaces the delegate's own signing
+ * requirement for a `Signer::Delegated` smart account, because Soroban's
+ * recording-mode simulation never actually invokes `__check_auth`'s body,
+ * so a `require_auth_for_args()` call that only happens inside it can't be
+ * discovered ahead of time. This script hand-constructs both required
+ * entries instead of trusting that discovery flow:
  *   1. The smart account's own top-level entry (`SOROBAN_CREDENTIALS_ADDRESS`
  *      or `_V2`, whichever simulation actually returns), signature encoded
  *      as an `AuthPayload` (`context_rule_ids` + a `signers` map with an
@@ -21,16 +34,9 @@
  *      separate entry below, not anything embedded here).
  *   2. A second, entirely separate `SorobanAuthorizationEntry` for the
  *      agent key, whose `rootInvocation` targets the smart account's own
- *      `__check_auth(auth_digest)` — not the top-level `settle` call — with
+ *      `__check_auth(preimage)` — not the top-level `settle` call — with
  *      a fresh nonce, signed with a plain Ed25519 signature over that
  *      entry's own preimage hash.
- * Both pieces (the `auth_digest` formula and the delegate entry's exact
- * shape) are transcribed from `smart-account-kit`'s real, working source
- * (`src/managers/multi-signer-manager.ts`, `src/kit/auth-payload.ts`), the
- * same library whose `Signer::Delegated` repro is the first real,
- * confirmed-on-chain instance of this working
- * (`https://stellar.expert/explorer/testnet/tx/f5835897d8b42544f2c98efbef7110be9d50308717885012b5a6bc9c20644d9f`),
- * not re-derived from scratch a second time.
  *
  * The registered account (`AGENT_SMART_ACCOUNT_TESTNET`) has two
  * `ContextRule`s, id 0 for `UPTO_SETTLEMENT_CONTRACT_TESTNET` and id 1 for
@@ -41,16 +47,17 @@
  * host records them (root call first, its sub-invocation second).
  *
  * Usage (from repo root, after `nvm use 22`):
- *   npx tsx apps/facilitator/scripts/agent-smart-account-settle-demo.ts
- *   (source apps/facilitator/.env into the shell first; this script does
- *   not read --env-file itself, matching every other script here run via
- *   tsx rather than raw node)
+ *   STELLAR_FEE_SPONSOR_SECRET=... STELLAR_AGENT_KEY_SECRET=... \
+ *   STELLAR_TEST_SELLER_PUBLIC=... STELLAR_TEST_ASSET_ADDRESS=... \
+ *   UPTO_SETTLEMENT_CONTRACT_TESTNET=... AGENT_SMART_ACCOUNT_TESTNET=... \
+ *     npx tsx apps/facilitator/scripts/agent-smart-account-settle-demo.ts
+ *   This script does not read --env-file itself, matching every other
+ *   script here run via tsx rather than raw node.
  */
 
 import { randomBytes } from "node:crypto";
 import {
   Address,
-  buildAuthorizationEntryPreimage,
   hash,
   inspectAuthEntry,
   Keypair,
@@ -60,6 +67,7 @@ import {
   xdr,
 } from "@stellar/stellar-sdk";
 import { Client as ContractClient } from "@stellar/stellar-sdk/contract";
+import { computeEntryAuthDigest } from "smart-account-kit";
 
 const RPC_URL = "https://soroban-testnet.stellar.org";
 const NETWORK_PASSPHRASE = "Test SDF Network ; September 2015";
@@ -86,7 +94,7 @@ for (const [name, value] of Object.entries(required)) {
   }
 }
 
-// --- Transcribed from smart-account-kit's real source, not re-derived ---
+// --- Transcribed from smart-account-kit's real source (multi-signer-manager.ts) ---
 
 function getAddressCredentials(credentials: xdr.SorobanCredentials): xdr.SorobanAddressCredentials {
   switch (credentials.switch().name) {
@@ -140,11 +148,6 @@ function writeAuthPayload(contextRuleIds: number[], delegateAddress: string): xd
       ]),
     }),
   ]);
-}
-
-function buildAuthDigest(signaturePayload: Buffer, contextRuleIds: number[]): Buffer {
-  const ruleIdsXdr = xdr.ScVal.scvVec(contextRuleIds.map((id) => xdr.ScVal.scvU32(id))).toXDR();
-  return hash(Buffer.concat([signaturePayload, ruleIdsXdr]));
 }
 
 function randomAuthEntryNonce(): xdr.Int64 {
@@ -262,26 +265,33 @@ async function main(): Promise<void> {
 
   const credentials = getAddressCredentials(smartAccountEntry.credentials());
   credentials.signatureExpirationLedger(expiration);
-  const preimage = buildAuthorizationEntryPreimage(
+
+  // The real change from the prior (failed, UnvalidatedContext #3002)
+  // attempt: the delegate's nested-entry argument is now a structured
+  // AuthDigestPreimage, computed by smart-account-kit's own published
+  // "preimage-v1" scheme, not a hand-rolled raw digest.
+  const { authDigest, delegatedAuthArgs } = computeEntryAuthDigest(
+    NETWORK_PASSPHRASE,
     smartAccountEntry,
     expiration,
-    NETWORK_PASSPHRASE
+    contextRuleIds,
+    "preimage-v1"
   );
-  const signaturePayload = hash(preimage.toXDR());
-  const authDigest = buildAuthDigest(signaturePayload, contextRuleIds);
 
   credentials.signature(writeAuthPayload(contextRuleIds, agentKey.publicKey()));
 
-  // The delegate's own, separate entry: authorizes `__check_auth(auth_digest)`
-  // on the smart account, NOT the top-level settle() call. Exact shape from
-  // smart-account-kit's multi-signer-manager.ts.
+  // The delegate's own, separate entry: authorizes
+  // `__check_auth(preimage)` on the smart account, NOT the top-level
+  // settle() call. Exact shape from smart-account-kit's
+  // multi-signer-manager.ts, `delegatedAuthArgs` already the correctly
+  // wrapped ScVal(s) for the preimage-v1 scheme.
   const delegatedNonce = randomAuthEntryNonce();
   const delegatedInvocation = new xdr.SorobanAuthorizedInvocation({
     function: xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeContractFn(
       new xdr.InvokeContractArgs({
         contractAddress: Address.fromString(SMART_ACCOUNT_ID as string).toScAddress(),
         functionName: "__check_auth",
-        args: [xdr.ScVal.scvBytes(authDigest)],
+        args: delegatedAuthArgs,
       })
     ),
     subInvocations: [],
@@ -311,6 +321,8 @@ async function main(): Promise<void> {
     ),
     rootInvocation: delegatedInvocation,
   });
+
+  console.log(`\nauth_digest (preimage-v1): ${authDigest.toString("hex")}`);
 
   const finalAuthEntries = [smartAccountEntry, delegateEntry, ...passthroughEntries];
 
@@ -360,7 +372,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
   console.log(
-    "\nSETTLED: the agent-smart-account (Signer::Delegated) authorized a real UptoSettlement.settle() call."
+    "\nSETTLED: the agent-smart-account (Signer::Delegated, preimage-v1) authorized a real two-context UptoSettlement.settle() call."
   );
 }
 

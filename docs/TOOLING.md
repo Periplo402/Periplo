@@ -109,7 +109,9 @@ through Phase 3 (two stacked, independently-diagnosed causes: a malformed
 reusable-workflow reference, then a private-repo Actions-minutes billing
 block once that was fixed; full evidence in `docs/DEFERRED.md`), while
 every phase's local `pnpm ci` was genuinely green the whole time. Check
-`gh run list -R Eras256/Periplo` periodically; CI passing locally is not
+`gh run list -R Periplo402/Periplo` periodically (the repo's current
+slug; it was transferred from `Eras256/Periplo`, which still redirects);
+CI passing locally is not
 the same claim as CI passing, don't assume CI mirrors the local gate.
 
 ## Environment notes specific to this machine

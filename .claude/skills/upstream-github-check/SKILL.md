@@ -123,13 +123,19 @@ notes if still in scratch, or just re-write the loop). Then:
   a literal em dash. Verbatim reviewer quotes (whawk46's) keep their
   original em dashes on purpose. Check added lines:
   `git diff | grep '^+' | grep -c $'\xe2\x80\x94'` must be `0`.
-- **Commit + push.** A docs-only change correcting a state independently
-  verified true (via `gh`, this turn) goes straight to `main` with the
-  user's per-instance go-ahead, same criterion as `a3a9571`. Branch
-  first only if the change is non-trivial. Conventional-commit format,
-  `Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>`. Then
-  `git fetch && git log --oneline -1 origin/main` to confirm the push
-  actually landed.
+- **Work in an isolated worktree, never `~/Periplo` directly** (several
+  sessions can share that checkout at once): `git worktree add -b
+  <branch> <scratchpad>/<name> origin/main`, make every edit and commit
+  there.
+- **Commit + PR, never a direct push to `main`.** Confirmed 2026-09-27:
+  a direct push is refused at the tool level regardless of how minor or
+  independently-verified the change is (`a3a9571`'s own "straight to
+  main" pattern predates that correction and is superseded, not a
+  precedent to repeat). Conventional-commit format,
+  `Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>`, push the
+  branch, `gh pr create`, and report the URL. Then `gh pr checks <n>`
+  to confirm CI is actually green before calling it done, not just that
+  `gh pr create` returned a link.
 
 ## Reporting shape
 
